@@ -1,6 +1,7 @@
 <%
 
-  if(!it.data || !it.data[0] || !it.data[0].content[0]){
+  if(!it.data || !it.data[0] || !it.data[0].content || !it.data[0].content[0]){
+    console.log(it.data);
 %>
         <tr ><td colspan="3" style="text-align: center">当天没有统计数据</td></tr>
 <%
