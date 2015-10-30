@@ -5,11 +5,11 @@ var options = {
     hostname: 'cgi.lp.oa.com',
     path: '/glacier-query-new/cgi_server',
     port: 80
-}
+};
 
 
 var errorType = {
-    'ECONNRESET': 'socketè¶…æ—¶'
+    'ECONNRESET': 'socket³¬Ê±'
 };
 var errorHandle = function (err, tips) {
     if (err.code && errorType[err.code]) {
@@ -20,35 +20,37 @@ var errorHandle = function (err, tips) {
 };
 
 /**
- * è¯·æ±‚æ•°æ®
+ * ÇëÇóÊı¾İ
  */
 exports.request = function (options, callback) {
     if (typeof options != 'object') {
-        console.error('ç¼ºå°‘è¯·æ±‚å‚æ•°');
+        console.error('È±ÉÙÇëÇó²ÎÊı');
         return false;
     }
     callback = callback || (function () {
     });
-    //åˆå§‹åŒ–é»˜è®¤å€¼
+    //³õÊ¼»¯Ä¬ÈÏÖµ
     options.timeout = options.timeout || 1000;
 
-    //å‘é€è¯·æ±‚
-    var req = http.request(options, cb);
-    //è¯·æ±‚é”™è¯¯å¤„ç†
-    req.on('error', function (err) {
-        errorHandle(err, 'è¿æ¥' + options.hostname);
-    });
-    //è®¾ç½®è¶…æ—¶
-    req.setTimeout(options.timeout, function () {
-        req.abort();
-    });
-    //è¯·æ±‚æˆåŠŸå›è°ƒ
+    //ÇëÇó³É¹¦»Øµ÷
     var cb = function (res) {
         console.log(res.statusCode);
         res.on('data', function (chunk) {
             console.log(chunk);
         });
     };
+
+    //·¢ËÍÇëÇó
+    var req = http.request(options, cb);
+    //ÇëÇó´íÎó´¦Àí
+    req.on('error', function (err) {
+        errorHandle(err, 'Á¬½Ó' + options.hostname);
+    });
+    //ÉèÖÃ³¬Ê±
+    req.setTimeout(options.timeout, function () {
+        req.abort();
+    });
+
 };
 
 exports.request(options, function(){});
