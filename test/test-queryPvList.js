@@ -9,7 +9,7 @@ var options = {
 
 
 var errorType = {
-    'ECONNRESET': 'socket³¬Ê±'
+    'ECONNRESET': 'socketè¶…æ—¶'
 };
 var errorHandle = function (err, tips) {
     if (err.code && errorType[err.code]) {
@@ -20,19 +20,19 @@ var errorHandle = function (err, tips) {
 };
 
 /**
- * ÇëÇóÊı¾İ
+ * è¯·æ±‚æ•°æ®
  */
 exports.request = function (options, callback) {
     if (typeof options != 'object') {
-        console.error('È±ÉÙÇëÇó²ÎÊı');
+        console.error('ç¼ºå°‘è¯·æ±‚å‚æ•°');
         return false;
     }
     callback = callback || (function () {
     });
-    //³õÊ¼»¯Ä¬ÈÏÖµ
+    //åˆå§‹åŒ–é»˜è®¤å€¼
     options.timeout = options.timeout || 1000;
 
-    //ÇëÇó³É¹¦»Øµ÷
+    //è¯·æ±‚æˆåŠŸå›è°ƒ
     var cb = function (res) {
         console.log(res.statusCode);
         res.on('data', function (chunk) {
@@ -40,13 +40,13 @@ exports.request = function (options, callback) {
         });
     };
 
-    //·¢ËÍÇëÇó
+    //å‘é€è¯·æ±‚
     var req = http.request(options, cb);
-    //ÇëÇó´íÎó´¦Àí
+    //è¯·æ±‚é”™è¯¯å¤„ç†
     req.on('error', function (err) {
-        errorHandle(err, 'Á¬½Ó' + options.hostname);
+        errorHandle(err, 'è¿æ¥' + options.hostname);
     });
-    //ÉèÖÃ³¬Ê±
+    //è®¾ç½®è¶…æ—¶
     req.setTimeout(options.timeout, function () {
         req.abort();
     });
