@@ -103,21 +103,22 @@ var StatisticsAction = {
                 res.json({ret: -1, msg: "error"});
                 return;
             }
-            var row = data.data;
-            logger.debug(row);
-            compassService.query(function (err, result) {
-                for (var l = row.length; l--;) {
-                    var ele = row[l];
-                    result.forEach(function (item) {
-                        if (ele.projectId == item.applyid && formateTime(ele.startDate) == item.ftime) {
-                            row[l]['pv'] = item.data_cnt;
-                            row[l]['rate'] = ((ele.total / item.data_cnt) * 100).toFixed(2) + '%';
-                        }
-                    });
-                }
-                data.data = row;
+            //var row = data.data;
+            //logger.debug(row);
+            //compassService.query(function (err, result) {
+            //    for (var l = row.length; l--;) {
+            //        var ele = row[l];
+            //        result.forEach(function (item) {
+            //            if (ele.projectId == item.applyid && formateTime(ele.startDate) == item.ftime) {
+            //                row[l]['pv'] = item.data_cnt;
+            //                row[l]['rate'] = ((ele.total / item.data_cnt) * 100).toFixed(2) + '%';
+            //            }
+            //        });
+            //    }
+            //    data.data = row;
                 res.json(data);
-            });
+                return;
+            //});
             /*compassService.query(function (err, result) {
              logger.info('callback is done');
              for (var l = row.length; l--;) {
