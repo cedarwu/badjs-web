@@ -28,10 +28,15 @@ module.exports = function (){
 
         pushProject();
 
-        
+
         // 邮件报表
         var EmailService = require("../service/EmailService");
         logger.info('start email report ...');
         new EmailService().start();
+
+        //pv同步服务
+        var pvStorage = require("../service/PvService");
+        logger.info('start pvStorage ...');
+        pvStorage.start();
     },3000)
 }
