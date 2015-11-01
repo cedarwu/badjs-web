@@ -149,12 +149,19 @@ var getByPageId = function (pageId, startTime, endTime, callback) {
 };
 
 /**
+ *  时间化整10分的
+ */
+var timeTo10 = function(timestr){
+    return parseInt(Number(timestr) / 10) * 10
+};
+
+/**
  * 按时间获取PV
  * @param {Number | String} timeString 时间点 (e.g. 201510302210)
  * @param {Function} callback 回调函数
  */
 var getAllByTime = function (timeString, callback) {
-    timeString = parseInt(Number(timeString) / 10) * 10;
+    timeString = timeTo10(timeString);
     var start = (timeString - 10).toString();
     var end = timeString.toString();
     var json = {
@@ -338,6 +345,7 @@ PVStorage.prototype = {
         var me = this;
         var date = new Date();
         date = date.format('yyyyMMddhhmm');
+        date = timeTo10(date); //转换成整10分的
         getAllByTime(date, function (err, data) {
             me.save(data, function (err, sd) {
                 if (err) {
