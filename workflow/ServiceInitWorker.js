@@ -33,5 +33,10 @@ module.exports = function (){
         var EmailService = require("../service/EmailService");
         logger.info('start email report ...');
         new EmailService().start();
+
+        //pv同步服务
+        var pvStorage = require("../service/PvService");
+        pvStorage.start();
+
     },3000)
 }

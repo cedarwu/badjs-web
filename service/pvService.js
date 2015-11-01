@@ -70,7 +70,12 @@ var postJSON = function (options, callback) {
         timeout: options.timeout || 60000
     };
     var cb = function (error, response, body) {
-        console.log('收到回包');
+        //console.log('收到回包');
+        if(error){
+            logger.error('请求响应错误：'+ error.toString());
+        }else{
+            logger.debug('请求成功');
+        }
         callback(error, body);
     };
     //发送请求
@@ -97,7 +102,7 @@ var getPVFromLP = function (select, callback) {
     logger.info('发送罗盘请求' + JSON.stringify(select));
     postJSON(options, function (err, data) {
         if (data && data.retCode === 0) {
-            console.log(JSON.stringify(data.data));
+            //console.log(JSON.stringify(data.data));
             callback(null, data.data);
         } else {
             console.error(err, data);
@@ -113,7 +118,7 @@ var getPVFromLP = function (select, callback) {
  * @param {Number | String} endTime 201510302210
  * @param {Function} callback
  */
-exports.getByPageId = function (pageId, startTime, endTime, callback) {
+var getByPageId = function (pageId, startTime, endTime, callback) {
     var json = {
         "ftime": {
             "range": startTime + ',' + endTime
@@ -148,7 +153,7 @@ exports.getByPageId = function (pageId, startTime, endTime, callback) {
  * @param {Number | String} timeString 时间点 (e.g. 201510302210)
  * @param {Function} callback 回调函数
  */
-exports.getAllByTime = function (timeString, callback) {
+var getAllByTime = function (timeString, callback) {
     timeString = parseInt(Number(timeString) / 10) * 10;
     var start = (timeString - 10).toString();
     var end = timeString.toString();
@@ -190,7 +195,7 @@ var formatPV = function (pvdata) {
     for (var date in pvdata) {
         !rtnO[date] && (rtnO[date] = {});
         (pvdata[date] || []).forEach(function (item) {
-            console.log(item);
+            //console.log(item);
             if (!item) return;
             var ftime = item[0];
             var pageid = item[1];
@@ -251,6 +256,7 @@ PVStorage.prototype = {
                             //执行外部来源回调
                             if (lens == 0) {
                                 lens = null;
+                                (errs.length == 0) && (errs = null);
                                 (typeof callback == 'function') && callback(errs, data);
                             }
                         });
@@ -258,7 +264,6 @@ PVStorage.prototype = {
                 })(i, ds[i]);
             }
         }
-
     },
     /**
      * 初始化fileStorage
@@ -293,21 +298,22 @@ PVStorage.prototype = {
      * @param {Array<String>} dates 日期数组
      * @param {Function} callback
      */
-    getByDates: function(dates, callback) {
+    getByDates: function (dates, callback) {
         if (!dates)
             return;
         var me = this;
         var len = dates.length;
         var errs = [];
         var pvs = {};
-        (dates || []).forEach(function(date){
-            me.getByDate(date, function(err, data){
+        (dates || []).forEach(function (date) {
+            me.getByDate(date, function (err, data) {
                 len--;
-                if(err){
+                if (err) {
                     errs.push(err);
                 }
                 pvs[date] = data;
-                if(len == 0){
+                if (len == 0) {
+                    (errs.length == 0) && (errs = null);
                     callback(errs, pvs);
                 }
             });
@@ -320,44 +326,71 @@ PVStorage.prototype = {
      * @param {String} endDate
      * @param callback
      */
-    queryByPageId: function (pageids, startDate, endDate, callback) {
+    queryByPageId: function (pageids, dates, callback) {
         var me = this;
         pageids = (typeof pageids == 'string') ? [pageids] : pageids;
-        var start = Number(startDate);
-        var end = Number(endDate);
-        var pvs = {};
-        var deta = end - start + 1;
-        var errs = [];
-        //限制最多只能拉10天
-        if (deta <= 10 && start > 20151000 && start < 20451001) {
-            while(start <= end){
-                (function(date){
-                    me.getByDate(date, function(err, data){
-                        deta--;
-                        if(err){
-                            errs.push(err);
-                        }
+        this.getByDates(dates, function (err, data) {
+            //未完待续
+        });
+    },
 
-
-                        //最后一个回来执行总回调
-                        if(deta == 0){
-                            callback(errs, pvs);
-                        }
-                    });
-                })(start++);
-            }
-        } else {
-            callback('拉取时间参数错误,最多只能拉取10天');
-        }
-
+    updatePVNow: function () {
+        var me = this;
+        var date = new Date();
+        date = date.format('yyyyMMddhhmm');
+        getAllByTime(date, function (err, data) {
+            me.save(data, function (err, sd) {
+                if (err) {
+                    //console.error(err);
+                    logger.error('同步pv失败' + err.toString());
+                } else {
+                    logger.log('同步pv成功');
+                }
+            });
+        });
     }
 };
 
-var pvsg = new PVStorage({
-    filePath: '../fileStorage/',
-    filePrefix: 'pv_',
-    fileSuffix: ''
-});
+/**
+ * 任务对象
+ * @constructor
+ */
+function Task(fn) {
+    if (typeof fn != 'function') {
+        console.warn('执行任务必须有操作参数');
+        return;
+    }
+    this.fn = fn;
+    this.timer = null;
+    return this;
+}
+
+Task.prototype = {
+    /**
+     * 间隔任务
+     * @param {Function} fn 任务
+     * @param {Number} sleep 间隔（单位s）
+     */
+    trad: function (sleep) {
+        var me = this;
+        if (typeof sleep != 'number') {
+            return this;
+        }
+        this.stop();
+        this.timer = setInterval(function () {
+            me.fn();
+        }, sleep * 1000);
+        return this;
+    },
+    stop: function () {
+        if (this.timer) {
+            clearInterval(this.timer);
+        }
+        return this;
+    }
+};
+
+
 //exports.getAllByTime(201510302220, function (err, data) {
 //    pvsg.save(data, function (err, data) {
 //        console.log(err, data);
@@ -380,18 +413,43 @@ var pvsg = new PVStorage({
 //    });
 //}, 1000);
 
-exports.getByPageId('169_2122_1', 201510302200, 201510311220, function (err, data) {
-    pvsg.save(data, function (err, data) {
-        //console.log(err, data);
-    });
-    pvsg.getByDates(['20151030','20151031'], function(err, data){
-        console.log('获取数据',data);
-    });
-});
+//getByPageId('169_2122_1', 201510302200, 201510311220, function (err, data) {
+//    pvsg.save(data, function (err, data) {
+//        //console.log(err, data);
+//    });
+//    pvsg.getByDates(['20151030','20151031'], function(err, data){
+//        console.log('获取数据',data);
+//    });
+//});
 
-//var back = {"20151030":[["2220","169_2122_1","8171"],["2210","169_2122_1","8576"],["2200","169_2122_1","8701"],["2150","169_2122_1","8935"],["2140","169_2122_1","8829"],["2130","169_2122_1","9022"],["2120","169_2122_1","8797"],["2110","169_2122_1","8932"],["2100","169_2122_1","9167"],["2050","169_2122_1","9359"],["2040","169_2122_1","9291"],["2030","169_2122_1","8988"],["2020","169_2122_1","9106"],["2010","169_2122_1","8710"],["2000","169_2122_1","8582"],["1950","169_2122_1","8574"],["1940","169_2122_1","8437"],["1930","169_2122_1","8292"],["1920","169_2122_1","8217"],["1910","169_2122_1","8016"],["1900","169_2122_1","7895"],["1850","169_2122_1","7476"],["1840","169_2122_1","7301"],["1830","169_2122_1","6969"],["1820","169_2122_1","6636"],["1810","169_2122_1","6382"],["1800","169_2122_1","6309"],["1750","169_2122_1","6210"],["1740","169_2122_1","5884"],["1730","169_2122_1","5632"],["1720","169_2122_1","5546"],["1710","169_2122_1","5372"],["1700","169_2122_1","4816"],["1650","169_2122_1","4799"],["1640","169_2122_1","4452"],["1630","169_2122_1","4228"],["1620","169_2122_1","4113"],["1610","169_2122_1","3861"],["1600","169_2122_1","3736"],["1550","169_2122_1","3574"],["1540","169_2122_1","3412"],["1530","169_2122_1","3394"],["1520","169_2122_1","3366"],["1510","169_2122_1","3413"],["1500","169_2122_1","3245"],["1450","169_2122_1","3219"],["1440","169_2122_1","3064"],["1430","169_2122_1","3075"],["1420","169_2122_1","3092"],["1410","169_2122_1","3035"],["1400","169_2122_1","3144"],["1350","169_2122_1","3171"],["1340","169_2122_1","3352"],["1330","169_2122_1","3735"],["1320","169_2122_1","4058"],["1310","169_2122_1","4411"],["1300","169_2122_1","4306"],["1250","169_2122_1","4527"],["1240","169_2122_1","4375"],["1230","169_2122_1","4344"],["1220","169_2122_1","3930"],["1210","169_2122_1","3670"],["1200","169_2122_1","3169"],["1150","169_2122_1","3249"],["1140","169_2122_1","3049"],["1130","169_2122_1","2951"],["1120","169_2122_1","3052"],["1110","169_2122_1","2930"],["1100","169_2122_1","2806"],["1050","169_2122_1","2928"],["1040","169_2122_1","2767"],["1030","169_2122_1","2674"],["1020","169_2122_1","2631"],["1010","169_2122_1","2567"],["1000","169_2122_1","2360"],["0950","169_2122_1","2323"],["0940","169_2122_1","2428"],["0930","169_2122_1","2506"],["0920","169_2122_1","2496"],["0910","169_2122_1","2434"],["0900","169_2122_1","2441"],["0850","169_2122_1","2353"],["0840","169_2122_1","2218"],["0830","169_2122_1","2167"],["0820","169_2122_1","2092"],["0810","169_2122_1","1907"],["0800","169_2122_1","1889"],["0750","169_2122_1","1896"],["0740","169_2122_1","1762"],["0730","169_2122_1","1708"],["0720","169_2122_1","1702"],["0710","169_2122_1","1619"],["0700","169_2122_1","1593"],["0650","169_2122_1","1569"],["0640","169_2122_1","1407"],["0630","169_2122_1","1315"],["0620","169_2122_1","1120"],["0610","169_2122_1","1008"],["0600","169_2122_1","828"],["0550","169_2122_1","701"],["0540","169_2122_1","592"],["0530","169_2122_1","465"],["0520","169_2122_1","421"],["0510","169_2122_1","374"],["0500","169_2122_1","336"],["0450","169_2122_1","304"],["0440","169_2122_1","314"],["0430","169_2122_1","328"],["0420","169_2122_1","302"],["0410","169_2122_1","274"],["0400","169_2122_1","334"],["0350","169_2122_1","321"],["0340","169_2122_1","386"],["0330","169_2122_1","364"],["0320","169_2122_1","385"],["0310","169_2122_1","392"],["0300","169_2122_1","441"],["0250","169_2122_1","431"],["0240","169_2122_1","435"],["0230","169_2122_1","501"],["0220","169_2122_1","584"],["0210","169_2122_1","625"],["0200","169_2122_1","639"],["0150","169_2122_1","701"],["0140","169_2122_1","862"],["0130","169_2122_1","930"],["0120","169_2122_1","1098"],["0110","169_2122_1","1196"],["0100","169_2122_1","1380"],["0050","169_2122_1","1551"],["0040","169_2122_1","1829"],["0030","169_2122_1","2129"],["0020","169_2122_1","2439"],["0010","169_2122_1","2744"],["0000","169_2122_1","3202"]]};
-//
 //console.log(formatPV(back));
+//console.log((new Date()).format('yyyyMMddhhmmss'));
 
+module.exports = {
+    //从罗盘拉取pv-日期
+    getPVByDate: function (timeString, callback) {
+        return getAllByTime(timeString, callback);
+    },
+    //从罗盘拉取pv-pageid
+    getPVByPageid: function (pageId, startDate, endDate, callback) {
+        return getByPageId(pageId, startDate, endDate, callback);
+    },
+    //创建一个pvservice实例
+    create: function (config) {
+        return new PVStorage(config);
+    },
+    //开启同步pv service
+    start: function () {
+        var pvService = this.create({
+            filePath: '../fileStorage/',
+            filePrefix: 'pv_',
+            fileSuffix: ''
+        });
+        var task = new Task(function () {
+            pvService.updatePVNow();
+        }).trad(5 * 60);//5分钟同步一次;
+        return pvService;
+    }
+};
 
-console.log((new Date()).format('yyyyMMddhhmmss'));
+//module.exports.start();
