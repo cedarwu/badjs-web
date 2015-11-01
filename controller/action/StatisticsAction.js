@@ -70,22 +70,22 @@ var StatisticsAction = {
                 res.json({ret: -1, msg: "error"});
                 return;
             }
-            var row = data.data;
-            compassService.query(function (err, result) {
-                for (var l = row.length; l--;) {
-                    var ele = row[l];
-                    result.forEach(function (item) {
-                        if (ele.projectId == item.applyid && formateTime(ele.startDate) == item.ftime) {
-                            row[l]['pv'] = item.data_cnt;
-                            row[l]['rate'] = ((ele.total / item.data_cnt) * 100).toFixed(2) + '%';
-                        }
-                    });
-                }
-                data.data = row;
-                res.json(data);
-            });
+            //var row = data.data;
+            //compassService.query(function (err, result) {
+            //    for (var l = row.length; l--;) {
+            //        var ele = row[l];
+            //        result.forEach(function (item) {
+            //            if (ele.projectId == item.applyid && formateTime(ele.startDate) == item.ftime) {
+            //                row[l]['pv'] = item.data_cnt;
+            //                row[l]['rate'] = ((ele.total / item.data_cnt) * 100).toFixed(2) + '%';
+            //            }
+            //        });
+            //    }
+            //    data.data = row;
+            //    res.json(data);
+            //});
             //data.data = row;
-            //res.json(data);
+            res.json(data);
         });
     },
     queryByChartForAdmin: function (param, req, res) {
