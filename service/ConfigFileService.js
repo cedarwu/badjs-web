@@ -1,5 +1,5 @@
 /**
- * ¹ÜÀíÅäÖÃÎÄ¼şµÄ·şÎñ
+ * ç®¡ç†é…ç½®æ–‡ä»¶çš„æœåŠ¡
  * @author homkerliu
  * @type {*|exports|module.exports}
  */
@@ -8,9 +8,9 @@ var log4js = require('log4js'),
     fs = require('fs');
 
 /**
- * ²åÈë
+ * æ’å…¥
  * @param filePath
- * @param data £ûstring£ı
+ * @param data ï½›stringï½
  * @param callback
  */
 function insertFile(filePath, data, callback) {
@@ -22,9 +22,9 @@ function insertFile(filePath, data, callback) {
     });
 }
 /**
- * ·â×°²åÈëjson¸ñÊ½µÄÊı¾İ
+ * å°è£…æ’å…¥jsonæ ¼å¼çš„æ•°æ®
  * @param filePath
- * @param data £ûjson£ı
+ * @param data ï½›jsonï½
  * @param callback
  */
 function insertJson(filePath, data, callback) {
@@ -35,7 +35,7 @@ function insertJson(filePath, data, callback) {
 }
 
 /**
- * ¸´ÖÆÀ©Õ¹¶ÔÏó
+ * å¤åˆ¶æ‰©å±•å¯¹è±¡
  * @param o
  * @param n
  * @param override
@@ -45,7 +45,7 @@ function extend(o, n, override) {
 };
 
 /**
- * ²éÑ¯£¬Òì²½
+ * æŸ¥è¯¢ï¼Œå¼‚æ­¥
  * @param filePath
  * @param callback
  */
@@ -53,7 +53,7 @@ function extend(o, n, override) {
 function queryFromFile(filePath, callback) {
     fs.readFile(filePath, function (err, data) {
         if (err) {
-            logger.error('file read file err');
+            logger.error(filePath + 'file read file err');
             return;
         }
         callback && callback(err, JSON.parse(data));
@@ -61,7 +61,7 @@ function queryFromFile(filePath, callback) {
 }
 
 /**
- * ²éÑ¯£¬Í¬²½
+ * æŸ¥è¯¢ï¼ŒåŒæ­¥
  * @param filepath
  */
 

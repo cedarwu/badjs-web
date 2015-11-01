@@ -379,7 +379,7 @@ Task.prototype = {
      * @param {Function} fn 任务
      * @param {Number} sleep 间隔（单位s）
      */
-    trad: function (sleep) {
+    sleep: function (sleep) {
         var me = this;
         if (typeof sleep != 'number') {
             return this;
@@ -398,41 +398,8 @@ Task.prototype = {
     }
 };
 
-
-//exports.getAllByTime(201510302220, function (err, data) {
-//    pvsg.save(data, function (err, data) {
-//        console.log(err, data);
-//    });
-//});
-
-//pvsg.getByDate('20151030', function (err, data) {
-//    console.log(err, data);
-//});
-//pvsg.getByDate('20151030', function (err, data) {
-//    console.log(err, data);
-//});
-
-
-//setTimeout(function () {
-//    exports.getAllByTime(201510302210, function (err, data) {
-//        fs.writeFile('req.json', JSON.stringify(data), function (err) {
-//
-//        });
-//    });
-//}, 1000);
-
-//getByPageId('169_2122_1', 201510302200, 201510311220, function (err, data) {
-//    pvsg.save(data, function (err, data) {
-//        //console.log(err, data);
-//    });
-//    pvsg.getByDates(['20151030','20151031'], function(err, data){
-//        console.log('获取数据',data);
-//    });
-//});
-
-//console.log(formatPV(back));
-//console.log((new Date()).format('yyyyMMddhhmmss'));
-
+//存放创建的实例
+var services = [];
 module.exports = {
     //从罗盘拉取pv-日期
     getPVByDate: function (timeString, callback) {
@@ -444,7 +411,13 @@ module.exports = {
     },
     //创建一个pvservice实例
     create: function (config) {
-        return new PVStorage(config);
+        var service = new PVStorage(config);
+        services.push(service);
+        return service;
+    },
+    //获取services
+    getServices: function(){
+        return services;
     },
     //开启同步pv service
     start: function () {
@@ -456,7 +429,7 @@ module.exports = {
         pvService.updatePVNow();
         var task = new Task(function () {
             pvService.updatePVNow();
-        }).trad(5 * 60);//5分钟同步一次;
+        }).sleep(5 * 60);//5分钟同步一次;
         return pvService;
     }
 };
