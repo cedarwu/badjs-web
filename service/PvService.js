@@ -445,6 +445,7 @@ module.exports = {
             filePrefix: 'pv_',
             fileSuffix: ''
         });
+        pvService.updatePVNow();
         var task = new Task(function () {
             pvService.updatePVNow();
         }).trad(5 * 60);//5分钟同步一次;
