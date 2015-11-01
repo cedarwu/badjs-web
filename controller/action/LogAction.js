@@ -48,7 +48,10 @@ var formatArray = function (items, timePeriod, startDate, endDate, isNotWithTime
     }
     return resultArr.reverse();
 }
-
+/**
+ * 错误量查询
+ * @type {{queryLogList: Function, queryLogCountOnly: Function, querySvgCount: Function, queryLogCount: Function, code: Function}}
+ */
 var LogAction = {
     queryLogList: function (params, req, res) {
 
@@ -60,6 +63,7 @@ var LogAction = {
         delete params.user;
         logService.query(params, function (err, items) {
             if (isError(res, err)) {
+                logger.error('LogAction.queryLogList:'+JSON.stringify(params)+',[error]:'+err);
                 return;
             }
             ;
