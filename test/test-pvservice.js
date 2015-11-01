@@ -1,5 +1,6 @@
 var PvService = require('../service/PvService');
 var FileStorage = require('../service/FileStorage');
+var path = require('path');
 
 var pvService = PvService.create({
     filePath: '../fileStorage/',
@@ -13,4 +14,6 @@ var pvService = PvService.create({
 //    });
 //});
 
-pvService.updatePVNow();
+//pvService.updatePVNow();
+
+console.log(path.resolve(__dirname,'../fileStorage/'));
