@@ -342,9 +342,9 @@ PVStorage.prototype = {
             me.save(data, function (err, sd) {
                 if (err) {
                     //console.error(err);
-                    logger.error('同步pv失败' + err.toString());
+                    logger.error('同步pv失败'+ date + ':' + err.toString());
                 } else {
-                    logger.log('同步pv成功');
+                    logger.log('同步pv成功' + date);
                 }
             });
         });

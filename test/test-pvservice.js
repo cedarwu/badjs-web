@@ -7,8 +7,10 @@ var pvService = PvService.create({
     fileSuffix: ''
 });
 
-PvService.getPVByDate('201510302220', function (err, data) {
-    pvService.save(data, function (err, data) {
-        console.log(err, data);
-    });
-});
+//PvService.getPVByDate('201510302220', function (err, data) {
+//    pvService.save(data, function (err, data) {
+//        console.log(err, data);
+//    });
+//});
+
+pvService.updatePVNow();
