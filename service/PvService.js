@@ -5,6 +5,7 @@ var http = require('http');
 var request = require('request');
 var fs = require('fs');
 var FileStorage = require('./FileStorage.js');
+var Path = require('path');
 var log4js = require('log4js'),
     logger = log4js.getLogger();
 
@@ -449,7 +450,7 @@ module.exports = {
     //开启同步pv service
     start: function () {
         var pvService = this.create({
-            filePath: '../fileStorage/',
+            filePath: Path.resolve(__dirname, '../fileStorage/'),
             filePrefix: 'pv_',
             fileSuffix: ''
         });

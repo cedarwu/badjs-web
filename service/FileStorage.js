@@ -50,7 +50,7 @@ FileStorage.prototype = {
         var me = this;
         fs.exists(this.filePath, function (exists) {
             if (!exists) {
-                console.log('no File:',me.filePath);
+                console.log('no File:',me.filePath,__filename,__dirname);
                 me.write(me.cache, function (err, data) {
                     callback(err, me);
                 });
