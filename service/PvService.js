@@ -1,4 +1,5 @@
 /**
+ * 实时pv同步（每10分钟）
  * Created by donaldcen on 2015/10/31.
  */
 var http = require('http');
@@ -7,34 +8,7 @@ var fs = require('fs');
 var FileStorage = require('./FileStorage.js');
 var log4js = require('log4js'),
     logger = log4js.getLogger();
-
-/**
- * 扩展时间对象提供格式化方法
- * @param {String} format 格式化字符串(yyyyMMddhhmmss)
- * @returns {*}
- */
-Date.prototype.format = function (format) {
-    var o = {
-        "M+": this.getMonth() + 1, //month
-        "d+": this.getDate(), //day
-        "h+": this.getHours(), //hour
-        "m+": this.getMinutes(), //minute
-        "s+": this.getSeconds(), //second
-        "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
-        "S": this.getMilliseconds() //millisecond
-    };
-
-    if (/(y+)/.test(format)) {
-        format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    }
-
-    for (var k in o) {
-        if (new RegExp("(" + k + ")").test(format)) {
-            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
-        }
-    }
-    return format;
-};
+var dateFormat = require('../utils/dateFormat');
 
 var errorType = {
     'ECONNRESET': 'socket超时'
@@ -67,7 +41,7 @@ var postJSON = function (options, callback) {
             'Content-Type': 'application/json'
         },
         json: options.data || {},
-        timeout: options.timeout || 60000
+        timeout: options.timeout || 300000 // 超时5分钟
     };
     var cb = function (error, response, body) {
         //console.log('收到回包');
@@ -228,7 +202,7 @@ function PVStorage(config) {
     };
     //{20151030:FileStorage}
     this.files = {};
-
+    return this;
 }
 
 PVStorage.prototype = {
@@ -344,7 +318,7 @@ PVStorage.prototype = {
     updatePVNow: function () {
         var me = this;
         var date = new Date();
-        date = date.format('yyyyMMddhhmm');
+        date = dateFormat(date, 'yyyyMMddhhmm');
         date = timeTo10(date); //转换成整10分的
         getAllByTime(date, function (err, data) {
             me.save(data, function (err, sd) {
@@ -411,7 +385,13 @@ module.exports = {
     },
     //创建一个pvservice实例
     create: function (config) {
-        var service = new PVStorage(config);
+        config = config || {};
+        var opt = {
+            filePath: config.filePath || __dirname+ '/../fileStorage/',
+            filePrefix: config.filePrefix || 'pv_',
+            fileSuffix: config.fileSuffix || ''
+        };
+        var service = new PVStorage(opt);
         services.push(service);
         return service;
     },
@@ -421,11 +401,7 @@ module.exports = {
     },
     //开启同步pv service
     start: function () {
-        var pvService = this.create({
-            filePath: __dirname+ '/../fileStorage/',
-            filePrefix: 'pv_',
-            fileSuffix: ''
-        });
+        var pvService = this.create();
         pvService.updatePVNow();
         var task = new Task(function () {
             pvService.updatePVNow();
