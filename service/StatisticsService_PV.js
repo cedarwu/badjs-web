@@ -10,6 +10,8 @@ var dateFormat = require('../utils/dateFormat');
 var LogService = require('../service/LogService');
 var Omerge = require('../utils/objectMerge');
 var FileStorage = require('./FileStorage');
+var log4js = require('log4js'),
+    logger = log4js.getLogger();
 
 /**
  * 转换pageMap
@@ -131,7 +133,7 @@ StatisticsServicePV.prototype = {
         };
         logService.queryCount(params, function (err, items) {
             if (err) {
-                logger.error('SPV：拉取错误失败' + err);
+                logger.error('errLog：拉取错误失败,'+JSON.stringify(params) + err);
             }
             callback(err, items);
         });
@@ -166,23 +168,35 @@ StatisticsServicePV.prototype = {
         var cb = function () {
             cblen--;
             if (cblen == 0) {
+                console.log('数据采集完成'+dateStr);
                 (errs.length == 0) && (errs = null);
                 callback(errs, ep);
             }
         };
         //拉取错误数据；
+        var appids = [];
         for (var appid in this.pageMap) {
+            appids.push(appid);
             cblen++;
-            (function (id) {
+        }
+
+        var timer = setInterval(function () {
+            var id = appids.pop();
+            if (id) {
                 me.getErrLogByDate(id, dateStr, function (err, data) {
-                    if(data){
+                    if (data) {
+                        console.log('拉取成功:'+ id);
                         (!ep[id]) && (ep[id] = {});
                         ep[id] = Omerge(ep[id], me.countError(data));
                     }
                     cb();
                 });
-            })(appid);
-        }
+            }else{
+                clearInterval(timer);
+                timer = null;
+            }
+        }, 500);
+
         //拉取pv数据
         cblen++;
         me.pvService.getByDate(dateStr, function(err, data){
@@ -195,6 +209,7 @@ StatisticsServicePV.prototype = {
                 });
                 ep[appid] = Omerge(ep[appid], me.countPv(dateStr, pvs));
             }
+            console.log('pv计算完成');
             cb();
         });
     },
