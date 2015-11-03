@@ -169,6 +169,7 @@ StatisticsServicePV.prototype = {
             cblen--;
             if (cblen == 0) {
                 console.log('数据采集完成'+dateStr);
+                me.countCent(ep);
                 (errs.length == 0) && (errs = null);
                 callback(errs, ep);
             }
@@ -214,6 +215,25 @@ StatisticsServicePV.prototype = {
         });
     },
 
+    /**
+     * 计算错误率
+     * @param eps
+     * @returns {*}
+     */
+    countCent: function(eps){
+        for(var id in eps){
+            (function(ep){
+                for(var t in ep){
+                    if(ep[t].pv){
+                        (!ep[t.count]) && (ep[t.count] = 0);
+                        ep[t].cent = (ep[t].count / ep[t].pv).toFixed(5);
+                    }
+                }
+            })(eps[id]);
+        }
+        return eps;
+    },
+
 
 
     /**
@@ -256,11 +276,10 @@ StatisticsServicePV.prototype = {
         return all;
     },
 
-    query: function (appid, callback) {
+    query: function (appid, dateStr, callback) {
 
     }
 };
 
 module.exports = StatisticsServicePV;
 
-;

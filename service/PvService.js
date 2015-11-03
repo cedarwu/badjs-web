@@ -400,11 +400,12 @@ module.exports = {
         return services;
     },
     //开启同步pv service
-    start: function () {
+    start: function (callback) {
         var pvService = this.create();
         pvService.updatePVNow();
         var task = new Task(function () {
             pvService.updatePVNow();
+            (typeof callback == 'function') && (callback());
         }).sleep(5 * 60);//5分钟同步一次;
         return pvService;
     }
