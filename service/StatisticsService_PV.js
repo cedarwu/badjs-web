@@ -248,7 +248,4 @@ StatisticsServicePV.prototype = {
 
 module.exports = StatisticsServicePV;
 
-var s = new StatisticsServicePV();
-s.countSave('20151103', function(err, data){
-    console.log('计算pv',err , data);
-});
+;

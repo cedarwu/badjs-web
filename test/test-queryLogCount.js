@@ -1,5 +1,6 @@
 var LogService = require('../service/LogService');
 var dateFormat = require('../utils/dateFormat');
+var StatisticsServicePV= require('../service/StatisticsService_PV');
 
 GLOBAL.pjconfig = {
     "mysql": {
@@ -139,6 +140,11 @@ var c = [ { count: 1, time: 1446446460000 },
 //    console.log(err, items);
 //});
 
-(c).forEach(function(item){
-    console.log(dateFormat(new Date(item.time),'yyyyMMddhhmm'));
+//(c).forEach(function(item){
+//    console.log(dateFormat(new Date(item.time),'yyyyMMddhhmm'));
+//});
+
+var s = new StatisticsServicePV();
+s.countSave('20151103', function(err, data){
+    console.log('计算pv',err , data);
 });
