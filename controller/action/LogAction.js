@@ -172,7 +172,6 @@ var LogAction = {
                     resArr.push(item);
                 }
             }
-            ;
             var resData = contentVisable ? errorObj : resArr;
             res.jsonp({ret: 0, msg: 'success-query', data: resData});
         });

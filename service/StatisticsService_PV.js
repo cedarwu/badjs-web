@@ -10,8 +10,11 @@ var dateFormat = require('../utils/dateFormat');
 var LogService = require('../service/LogService');
 var Omerge = require('../utils/objectMerge');
 var FileStorage = require('./FileStorage');
+var fs = require('fs');
+var path = require('path');
 var log4js = require('log4js'),
     logger = log4js.getLogger();
+var filePath = path.resolve(GLOBAL.pjconfig.fileStorage.pageid);
 
 /**
  * 转换pageMap
@@ -56,8 +59,20 @@ var string2Date = function (str, format) {
     return time;
 };
 
+/**
+ * 重新拉取配置文件
+ */
+var reloadFileConfig = function(){
+    try{
+        var config = JSON.parse(fs.readFileSync(filePath));
+        pageConfig = fs.readFileAsync(config);
+    }catch(e){
+        logger.error('配置文件解析错误:'+ e.message + e.stack);
+    }
+};
 
 function StatisticsServicePV() {
+    reloadFileConfig();
     this.pageMap = page2Map(pageConfig);
     this.pvService = PvService.getServices()[0] || PvService.create();
     this.options = {

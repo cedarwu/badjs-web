@@ -13,7 +13,8 @@ var LogAction = require('./action/LogAction'),
     realtimeService = require("../service/RealtimeService"),
     UserApplyAction = require("./action/UserApplyAction"),
     compassService = require("../service/compassService"),
-    ConfigFileService = require('../service/ConfigFileService');
+    ConfigFileService = require('../service/ConfigFileService'),
+    ErrorCountAction = require('./action/ErrorCountAction');
 
 
 var log4js = require('log4js'),
@@ -132,6 +133,7 @@ module.exports = function (app) {
             res.jsonp(JSON.stringify(result));
         });
     });
+
     /**
      * 提供给accepter
      * 管理员用户信息查询,告警阀值查询
@@ -205,7 +207,9 @@ module.exports = function (app) {
                 case "statistics" :
                     StatisticsAction[operation](params, req, res);
                     break;
-
+                case "errorCount" :
+                    ErrorCountAction[operation](params, req, res);
+                    break;
                 default  :
                     next();
             }
