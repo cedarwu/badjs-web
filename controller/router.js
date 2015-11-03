@@ -134,7 +134,7 @@ module.exports = function (app) {
         });
     });
     //实时统计接口
-    app.get('/errorCount', function(req, res){
+    app.get('/errorCount/queryRealCount', function(req, res){
         var method = req.method.toLowerCase();
         var params = method == "post" ? req.body : req.query;
         logger.info('web query start' + JSON.stringify(params));
