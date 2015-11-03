@@ -127,9 +127,9 @@ StatisticsServicePV.prototype = {
     getErrLog: function (appid, start, end, callback) {
         var logService = new LogService();
         var params = {
-            id: appid,
-            startDate: start,
-            endDate: end
+            id: Number(appid),
+            startDate: Number(start),
+            endDate: Number(end)
         };
         logService.queryCount(params, function (err, items) {
             if (err) {
