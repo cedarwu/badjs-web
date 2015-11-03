@@ -124,6 +124,7 @@ var getByPageId = function (pageId, startTime, endTime, callback) {
 
 /**
  *  时间化整10分的
+ *  @param timestr
  */
 var timeTo10 = function(timestr){
     return parseInt(Number(timestr) / 10) * 10
@@ -315,7 +316,8 @@ PVStorage.prototype = {
         });
     },
 
-    updatePVNow: function () {
+    updatePVNow: function (callback) {
+        callback = callback || (function(){});
         var me = this;
         var date = new Date();
         date = dateFormat(date, 'yyyyMMddhhmm');
@@ -328,6 +330,7 @@ PVStorage.prototype = {
                 } else {
                     logger.log('同步pv成功' + date);
                 }
+                callback();
             });
         });
     }

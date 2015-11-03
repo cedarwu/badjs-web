@@ -140,6 +140,17 @@ StatisticsServicePV.prototype = {
     },
 
     /**
+     * 更新当天的数据
+     * @param callback
+     */
+    updateNow: function(callback){
+        callback = callback || (function(){});
+        var now = new Date();
+        var date = dateFormat(now, 'yyyyMMdd');
+        this.countSave(date, callback);
+    },
+
+    /**
      * 获取数据统计并保存
      * @param dateStr
      * @param callback

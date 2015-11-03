@@ -34,9 +34,15 @@ module.exports = function (){
         logger.info('start email report ...');
         new EmailService().start();
 
+        //错误率统计服务
+        var ErrCountService = require("../service/StatisticsService_PV");
+        var errCount = new ErrCountService();
+
         //pv同步服务
         var pvStorage = require("../service/PvService");
         logger.info('start pvStorage ...');
-        pvStorage.start();
+        pvStorage.start(function(){
+            errCount.updateNow();
+        });
     },3000)
 }
