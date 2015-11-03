@@ -224,8 +224,8 @@ StatisticsServicePV.prototype = {
         for(var id in eps){
             (function(ep){
                 for(var t in ep){
-                    if(ep[t].pv){
-                        (!ep[t.count]) && (ep[t.count] = 0);
+                    if(ep[t].pv > 0){
+                        (typeof ep[t].count != 'number') && (ep[t].count = 0);
                         ep[t].cent = (ep[t].count / ep[t].pv).toFixed(5);
                     }
                 }
