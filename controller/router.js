@@ -133,6 +133,13 @@ module.exports = function (app) {
             res.jsonp(JSON.stringify(result));
         });
     });
+    //实时统计接口
+    app.get('/errorCount', function(req, res){
+        var method = req.method.toLowerCase();
+        var params = method == "post" ? req.body : req.query;
+        logger.info('web query start' + JSON.stringify(params));
+        ErrorCountAction.queryRealCount(params, req, res);
+    });
 
     /**
      * 提供给accepter
