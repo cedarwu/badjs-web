@@ -65,7 +65,7 @@ var string2Date = function (str, format) {
 var reloadFileConfig = function(){
     try{
         var config = JSON.parse(fs.readFileSync(filePath));
-        pageConfig = fs.readFileAsync(config);
+        pageConfig = config;
     }catch(e){
         logger.error('配置文件解析错误:'+ e.message + e.stack);
     }
@@ -302,8 +302,33 @@ StatisticsServicePV.prototype = {
         return all;
     },
 
-    query: function (appid, dateStr, callback) {
-
+    /**
+     * 获取一天的数据
+     * @param {String | Array} appids 项目id
+     * @param {String} dateStr 时间戳(20151011)
+     * @param {Function} callback
+     */
+    queryByDay: function (appids, dateStr, callback) {
+        if(typeof appids == 'string'){
+            appids = [appids];
+        }
+        this.openFile(dateStr, function(err, fileStorage){
+            if(fileStorage){
+                fileStorage.read(function(err, data){
+                    var retObj = {};
+                    if(err){
+                        callback(err);
+                    }else{
+                        (appids || []).forEach(function(appid){
+                            retObj[appid] = data[appid] || {};
+                        });
+                        callback(null, retObj);
+                    }
+                });
+            }else{
+                callback(err);
+            }
+        });
     }
 };
 
