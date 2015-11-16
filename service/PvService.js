@@ -407,8 +407,9 @@ module.exports = {
         var pvService = this.create();
         pvService.updatePVNow();
         var task = new Task(function () {
-            pvService.updatePVNow();
-            (typeof callback == 'function') && (callback());
+            pvService.updatePVNow(function(){
+                (typeof callback == 'function') && (callback());
+            });
         }).sleep(5 * 60);//5分钟同步一次;
         return pvService;
     }

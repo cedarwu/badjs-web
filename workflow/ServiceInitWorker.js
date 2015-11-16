@@ -37,6 +37,7 @@ module.exports = function (){
         //错误率统计服务
         var ErrCountService = require("../service/StatisticsService_PV");
         var errCount = new ErrCountService();
+        errCount.updateNow();
 
         //pv同步服务
         var pvStorage = require("../service/PvService");
