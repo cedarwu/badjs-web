@@ -230,11 +230,13 @@ StatisticsServicePV.prototype = {
         me.pvService.getByDate(dateStr, function(err, data){
             for(var appid in me.pageMap){
                 var pvs = [];
+                console.log(me.pageMap[appid]);
                 (me.pageMap[appid] || []).forEach(function(pageid){
                     if(data[pageid]){
                         pvs.push(data[pageid]);
                     }
                 });
+                console.log(pvs);
                 ep[appid] = Omerge(ep[appid], me.countPv(dateStr, pvs));
             }
             console.log('pv计算完成');
