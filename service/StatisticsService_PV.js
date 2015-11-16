@@ -14,26 +14,26 @@ var fs = require('fs');
 var path = require('path');
 var log4js = require('log4js'),
     logger = log4js.getLogger();
-var filePath = path.resolve(GLOBAL.pjconfig.fileStorage.pageid);
+//var filePath = path.resolve(GLOBAL.pjconfig.fileStorage.pageid);
 
 /**
  * 转换pageMap
  * @param {json} pageconfig 页面id配置
  * @returns {{}}
  */
-var page2Map = function (pageconfig) {
-    var map = {};
-    for (var i in pageconfig) {
-        var pageid = i.replace(/-/g, '_');
-        if (!map[pageconfig[i]]) {
-            map[pageconfig[i]] = [];
-        }
-        if (!(i in map[pageconfig[i]])) {
-            map[pageconfig[i]].push(pageid);
-        }
-    }
-    return map;
-};
+//var page2Map = function (pageconfig) {
+//    var map = {};
+//    for (var i in pageconfig) {
+//        var pageid = i.replace(/-/g, '_');
+//        if (!map[pageconfig[i]]) {
+//            map[pageconfig[i]] = [];
+//        }
+//        if (!(i in map[pageconfig[i]])) {
+//            map[pageconfig[i]].push(pageid);
+//        }
+//    }
+//    return map;
+//};
 
 /**
  * 字符串转时间
