@@ -340,7 +340,7 @@ StatisticsServicePV.prototype = {
         var rtnArray = [];
         for(var t in data){
             data[t].time = Number(t) || 0;
-            if(typeof data[t] == 'function'){
+            if(typeof data[t] == 'object'){
                 rtnArray.push(data[t]);
             }
         }
