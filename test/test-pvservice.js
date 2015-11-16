@@ -1,10 +1,16 @@
 var PvService = require('../service/PvService');
 var path = require('path');
+var StatisticsServicePV = require('../service/StatisticsService_PV');
 
 var pvService = PvService.create({
     filePath: '../fileStorage/',
     filePrefix: 'pv_',
     fileSuffix: ''
+});
+
+var SSPV = new StatisticsServicePV();
+SSPV.getEP('20151116', function (err, data) {
+    console.log(err, data);
 });
 
 //PvService.getPVByDate('201510302220', function (err, data) {
@@ -13,12 +19,12 @@ var pvService = PvService.create({
 //    });
 //});
 //跑一个页面的多天数据(一次最多20小时)
-PvService.getPVByPageid('169_2122_1', '201510312200' , '201511021000', function (err, data) {
-    console.log('数据回来', err, data);
-    pvService.save(data, function (err, data) {
-        console.log(err, data);
-    });
-});
+//PvService.getPVByPageid('169_2122_1', '201510312200' , '201511021000', function (err, data) {
+//    console.log('数据回来', err, data);
+//    pvService.save(data, function (err, data) {
+//        console.log(err, data);
+//    });
+//});
 
 //pvService.updatePVNow();
 
