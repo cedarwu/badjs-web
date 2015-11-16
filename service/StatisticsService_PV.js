@@ -4,7 +4,7 @@
  * @constructor
  */
 
-var pageConfig = require('../fileStorage/pageid.json');
+var pageConfig = require('../fileStorage/pageid.js');
 var PvService = require('./PvService');
 var dateFormat = require('../utils/dateFormat');
 var LogService = require('../service/LogService');
@@ -73,7 +73,7 @@ var reloadFileConfig = function(){
 
 function StatisticsServicePV() {
     reloadFileConfig();
-    this.pageMap = page2Map(pageConfig);
+    this.pageMap = pageConfig;
     this.pvService = PvService.getServices()[0] || PvService.create();
     this.options = {
         filePath: __dirname + '/../fileStorage/count_{date}'
