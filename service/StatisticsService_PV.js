@@ -73,7 +73,6 @@ var reloadFileConfig = function(){
 };
 
 function StatisticsServicePV() {
-    reloadFileConfig();
     this.pageMap = pageConfig;
     this.pvService = PvService.getServices()[0] || PvService.create();
     this.options = {
