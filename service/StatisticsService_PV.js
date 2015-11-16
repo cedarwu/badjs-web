@@ -64,7 +64,8 @@ var string2Date = function (str, format) {
  */
 var reloadFileConfig = function(){
     try{
-        var config = JSON.parse(fs.readFileSync(filePath));
+        var config = fs.readFileSync(filePath);
+        console.log(config);
         pageConfig = config;
     }catch(e){
         logger.error('配置文件解析错误:'+ e.message + e.stack);
