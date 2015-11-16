@@ -108,7 +108,6 @@ StatisticsServicePV.prototype = {
      */
     save: function (dateStr, data, callback) {
         var me = this;
-        console.log('保存：', dateStr, data);
         me.openFile(dateStr, function (err, fileStorage) {
             if (err) {
                 callback(err);
