@@ -228,9 +228,11 @@ StatisticsServicePV.prototype = {
         //拉取pv数据
         cblen++;
         me.pvService.getByDate(dateStr, function(err, data){
+            console.log(data);
+            console.log(me.pageMap);
             for(var appid in me.pageMap){
                 var pvs = [];
-                console.log(me.pageMap[appid]);
+
                 (me.pageMap[appid] || []).forEach(function(pageid){
                     if(data[pageid]){
                         pvs.push(data[pageid]);

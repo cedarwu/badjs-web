@@ -43,7 +43,7 @@ var pvService = PvService.create({
 
 var SSPV = new StatisticsServicePV();
 SSPV.getEP('20151116', function (err, data) {
-    console.log(err, data);
+    console.log(err,'done');
 });
 
 //PvService.getPVByDate('201510302220', function (err, data) {
