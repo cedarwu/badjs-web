@@ -17,7 +17,8 @@ var ErrorCount = {
             return;
         }
         var sspv = new SSPV();
-        sspv.queryByDay(params.id, params.date, function(err, data){
+        var ids = params.id.toString().split(',');
+        sspv.queryByDay(ids, params.date, function(err, data){
             if(err){
                 res.jsonp({ret: -2, msg: err, data: null});
             }else{

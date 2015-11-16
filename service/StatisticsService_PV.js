@@ -309,6 +309,7 @@ StatisticsServicePV.prototype = {
      * @param {Function} callback
      */
     queryByDay: function (appids, dateStr, callback) {
+        var me = this;
         if(typeof appids == 'string'){
             appids = [appids];
         }
@@ -320,7 +321,7 @@ StatisticsServicePV.prototype = {
                         callback(err);
                     }else{
                         (appids || []).forEach(function(appid){
-                            retObj[appid] = data[appid] || {};
+                            retObj[appid] = me.parseData(data[appid] || {});
                         });
                         callback(null, retObj);
                     }
@@ -329,6 +330,22 @@ StatisticsServicePV.prototype = {
                 callback(err);
             }
         });
+    },
+    /**
+     * 格式化接口数据
+     * @param data
+     * @returns {*}
+     */
+    parseData: function(data){
+        var rtnArray = [];
+        for(var t in data){
+            data[t].time = Number(t) || 0;
+            rtnArray.push(data[t]);
+        }
+        rtnArray.sort(function(a,b){
+            return a.time > b.time;
+        });
+        return rtnArray;
     }
 };
 
