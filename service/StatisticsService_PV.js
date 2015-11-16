@@ -228,8 +228,6 @@ StatisticsServicePV.prototype = {
         //拉取pv数据
         cblen++;
         me.pvService.getByDate(dateStr, function(err, data){
-            console.log(data);
-            console.log(me.pageMap);
             for(var appid in me.pageMap){
                 var pvs = [];
 
@@ -238,7 +236,6 @@ StatisticsServicePV.prototype = {
                         pvs.push(data[pageid]);
                     }
                 });
-                console.log(pvs);
                 ep[appid] = Omerge(ep[appid], me.countPv(dateStr, pvs));
             }
             console.log('pv计算完成');
