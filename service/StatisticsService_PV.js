@@ -340,10 +340,12 @@ StatisticsServicePV.prototype = {
         var rtnArray = [];
         for(var t in data){
             data[t].time = Number(t) || 0;
-            rtnArray.push(data[t]);
+            if(typeof data[t] == 'function'){
+                rtnArray.push(data[t]);
+            }
         }
         rtnArray.sort(function(a,b){
-            return a.time > b.time;
+            return a.time - b.time;
         });
         return rtnArray;
     }
