@@ -8,7 +8,40 @@ var mysql ="mysql://badjs:pass4badjs@10.198.30.62:4250/badjs";
 //var mysql = "mysql://badjs:pass4badjs@10.134.5.103:3306/badjs";
 //var mysql = "mysql://root:root@localhost:3306/badjs";
 
-
+GLOBAL.pjconfig = {
+    "mysql": {
+        "url": "mysql://badjs:pass4badjs@10.198.30.62:4250/badjs"
+    },
+    "storage": {
+        "errorMsgTopUrl": "http://10.185.14.28:9000/errorMsgTop",
+        "errorMsgTopCacheUrl": "http://10.185.14.28:9000/errorMsgTopCache",
+        "queryUrl": "http://10.185.14.28:9000/query",
+        "queryCountUrl": "http://10.185.14.28:9000/queryCount",
+        "querySvgUrl": "http://10.185.14.28:9000/errorCountSvg"
+    },
+    "acceptor": {
+        "pushProjectUrl": "http://10.185.14.28:9001/getProjects"
+    },
+    "zmq": {
+        "url": "tcp://10.185.14.28:10000",
+        "subscribe": "badjs"
+    },
+    "email": {
+        "homepage": "http://badjs.sng.local/user/index.html",
+        "from": "badjs-vip@tencent.com",
+        "emailSuffix": "@tencent.com",
+        "time": "09:00:00",
+        "top": 20,
+        "module": "email_tof"
+    },
+    "postgreSql": {
+        "connString": "postgres://tdw_v_zscai:234516038@pub-bi-tdw.oa.com:5432/sng_vas_speedtest_database"
+    },
+    "fileStorage":{
+        "pageid":"./fileStorage/pageid.json",
+        "threshold":"./fileStorage/threshold.json"
+    }
+};
 orm.connect( mysql, function(err , db) {
     if(err){
         throw err;
@@ -26,7 +59,7 @@ orm.connect( mysql, function(err , db) {
     var aa = new StatisticsService();
 
 
-    var startDate = new Date('2014-12-23 00:00:00');
+    var startDate = new Date('2015-11-21 00:00:00');
     var nowDate = new Date;
 
     var fetch = function (id , startDate){
