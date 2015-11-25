@@ -357,17 +357,19 @@ StatisticsServicePV.prototype = {
                         }else{
                             retObj[dateStr] = me.parseData(data[appid] || []);
                         }
-                        count--;
+                        
+                        if(--count==0) {
+                            callback(null, retObj);
+                        }
                     });
                 }else{
                     callback(err);
                 }
+
             });
         }
 
-        if(count==0) {
-            callback(null, retObj);
-        }
+
     },
 
 
