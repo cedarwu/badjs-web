@@ -141,6 +141,14 @@ module.exports = function (app) {
         ErrorCountAction.queryRealCount(params, req, res);
     });
 
+    //项目错误信息统计接口
+    app.get('/errorCount/queryProjectTotal', function(req, res){
+        var method = req.method.toLowerCase();
+        var params = method == "post" ? req.body : req.query;
+        logger.info('web query start' + JSON.stringify(params));
+        ErrorCountAction.queryProjectTotal(params, req, res);
+    });
+
     /**
      * 提供给accepter
      * 管理员用户信息查询,告警阀值查询
