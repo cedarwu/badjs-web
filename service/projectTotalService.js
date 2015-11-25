@@ -346,21 +346,21 @@ StatisticsServicePV.prototype = {
             retObj = {};
 
         for(var i = 1; i <= timeScope; i++) {
-            var dateStr = new Date() - oneDay * i;
-            dateStr = dateFormat(new Date(dateStr), 'yyyyMMdd');
+            var date = new Date() - oneDay * i;
+            var dateStr = dateFormat(new Date(date), 'yyyyMMdd');
 
             this.openFile(dateStr, function(err, fileStorage){
                 if(fileStorage){
                     fileStorage.read(function(err, data){
                         if(err){
-                            callback('err1');
+                            callback(date + ', ' +dateStr);
                         }else{
                             retObj[dateStr] = me.parseData(data[appid] || []);
                             count--;
                         }
                     });
                 }else{
-                    callback('err2');
+                    callback(err);
                 }
             });
         }
