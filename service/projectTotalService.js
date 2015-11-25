@@ -353,14 +353,14 @@ StatisticsServicePV.prototype = {
                 if(fileStorage){
                     fileStorage.read(function(err, data){
                         if(err){
-                            callback(err);
+                            callback('err1');
                         }else{
                             retObj[dateStr] = me.parseData(data[appid] || []);
                             count--;
                         }
                     });
                 }else{
-                    callback(err);
+                    callback('err2');
                 }
             });
         }
