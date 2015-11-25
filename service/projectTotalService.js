@@ -352,12 +352,12 @@ StatisticsServicePV.prototype = {
             this.openFile(dateStr, function(err, fileStorage){
                 if(fileStorage){
                     fileStorage.read(function(err, data){
-                        if(err){
-                            callback(date + ', ' +dateStr);
+                        if(err){   //常规报错为没有当天数据
+                            retObj[dateStr] = []
                         }else{
                             retObj[dateStr] = me.parseData(data[appid] || []);
-                            count--;
                         }
+                        count--;
                     });
                 }else{
                     callback(err);
