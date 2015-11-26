@@ -349,7 +349,7 @@ StatisticsServicePV.prototype = {
             var date = new Date() - oneDay * i;
             var dateStr = dateFormat(new Date(date), 'yyyyMMdd');
             (function(dateStr) {
-                this.openFile(dateStr, function(err, fileStorage){
+                me.openFile(dateStr, function(err, fileStorage){
                     if(fileStorage){
                         fileStorage.read(function(err, data){
                             if(err){   //常规报错为没有当天数据
