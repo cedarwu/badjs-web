@@ -3,13 +3,13 @@ webpackJsonp([10],{
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	var projectTotal = __webpack_require__(15);
+	var projectTotal = __webpack_require__(14);
 
 	projectTotal.init();
 
 /***/ },
 
-/***/ 15:
+/***/ 14:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, __webpack_provided_window_dot_w2ui, w2ui) {/**
@@ -18,7 +18,7 @@ webpackJsonp([10],{
 	 * */
 
 
-	__webpack_require__(19);
+	__webpack_require__(20);
 	__webpack_require__(117);
 
 
@@ -62,15 +62,16 @@ webpackJsonp([10],{
 	                timeScope: $("#select-timeScope").val()
 	            };
 	            $.getJSON("/errorCount/queryProjectTotal", param, function (data) {
-	                var ret = self.processData(data);
+	                var ret = self.processData(data.data || data);
 	                self.renderTable(ret);
 	            });
 	        }).click();
 	    },
 	    processData: function(data) {
+	        var firstCircle = 1;
 	        var ret = {
 	            name: 'grid',
-	            columnGroups: [{span: 1}],
+	            columnGroups: [{span: 1, caption: ''}],
 	            columns: [{
 	                field: 'projectName',
 	                caption: '项目名称',
@@ -92,7 +93,7 @@ webpackJsonp([10],{
 	                    totalName = 'total' + date,
 	                    pvName = 'pv' + date,
 	                    centName = 'cent' + date;
-	                ret.columnGroups.push({
+	                firstCircle && ret.columnGroups.push({
 	                    span: 3,
 	                    caption: date
 	                });
@@ -124,6 +125,8 @@ webpackJsonp([10],{
 	                record[centName] = dayObj['cent'];
 	            });
 
+	            firstCircle = 0;
+
 	            ret.records.push(record);
 	        });
 
@@ -150,11 +153,11 @@ webpackJsonp([10],{
 
 	module.exports = statistics;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(19), __webpack_require__(19)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(20), __webpack_require__(20)))
 
 /***/ },
 
-/***/ 19:
+/***/ 20:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, jQuery) {/* w2ui 1.4.3 (c) http://w2ui.com, vitmalina@gmail.com */

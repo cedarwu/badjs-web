@@ -1,15 +1,15 @@
-webpackJsonp([4],{
+webpackJsonp([5],{
 
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	var usermanger = __webpack_require__(12);
+	var usermanger = __webpack_require__(10);
 
 	usermanger.init();
 
 /***/ },
 
-/***/ 12:
+/***/ 10:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {/**

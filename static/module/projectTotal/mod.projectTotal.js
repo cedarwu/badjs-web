@@ -48,15 +48,16 @@ var statistics = {
                 timeScope: $("#select-timeScope").val()
             };
             $.getJSON("/errorCount/queryProjectTotal", param, function (data) {
-                var ret = self.processData(data);
+                var ret = self.processData(data.data || data);
                 self.renderTable(ret);
             });
         }).click();
     },
     processData: function(data) {
+        var firstCircle = 1;
         var ret = {
             name: 'grid',
-            columnGroups: [{span: 1}],
+            columnGroups: [{span: 1, caption: ''}],
             columns: [{
                 field: 'projectName',
                 caption: '项目名称',
@@ -78,7 +79,7 @@ var statistics = {
                     totalName = 'total' + date,
                     pvName = 'pv' + date,
                     centName = 'cent' + date;
-                ret.columnGroups.push({
+                firstCircle && ret.columnGroups.push({
                     span: 3,
                     caption: date
                 });
@@ -109,6 +110,8 @@ var statistics = {
                 record[pvName] = dayObj['pv'];
                 record[centName] = dayObj['cent'];
             });
+
+            firstCircle = 0;
 
             ret.records.push(record);
         });
