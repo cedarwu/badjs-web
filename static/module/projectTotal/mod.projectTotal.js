@@ -143,7 +143,7 @@ function formateTime(time) {
 function getformateTime(day) {
     var dayObj = new Date(),
         dayTime = 1000 * 60 * 60 * 24,
-        today = Date.parse(dayObj.getFullYear() + '-' + (dayObj.getMonth() - -1) + '-' + (dayObj.getDate() - 1)),
+        today = Date.parse(dayObj.getFullYear() + '-' + (dayObj.getMonth() -1) + '-' + (dayObj.getDate() - 1)),
         groups = [];
     groups.push({caption: ' ', span: 1});
     for (var i = day; i--;) {

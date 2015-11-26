@@ -348,28 +348,28 @@ StatisticsServicePV.prototype = {
         for(var i = 1; i <= timeScope; i++) {
             var date = new Date() - oneDay * i;
             var dateStr = dateFormat(new Date(date), 'yyyyMMdd');
+            (function(dateStr) {
+                this.openFile(dateStr, function(err, fileStorage){
+                    if(fileStorage){
+                        fileStorage.read(function(err, data){
+                            if(err){   //常规报错为没有当天数据
+                                retObj[dateStr] = []
+                            }else{
+                                retObj[dateStr] = me.parseData(data[appid] || []);
+                            }
 
-            this.openFile(dateStr, function(err, fileStorage){
-                if(fileStorage){
-                    fileStorage.read(function(err, data){
-                        if(err){   //常规报错为没有当天数据
-                            retObj[dateStr] = []
-                        }else{
-                            retObj[dateStr] = me.parseData(data[appid] || []);
-                        }
-                        
-                        if(--count==0) {
-                            callback(null, retObj);
-                        }
-                    });
-                }else{
-                    callback(err);
-                }
+                            if(--count==0) {
+                                callback(null, retObj);
+                            }
+                        });
+                    }else{
+                        callback(err);
+                    }
 
-            });
+                });
+            })(dateStr);
+
         }
-
-
     },
 
 
