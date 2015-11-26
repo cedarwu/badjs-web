@@ -356,21 +356,22 @@ StatisticsServicePV.prototype = {
                         fileStorage.read(function(err, data){
 
                             appids.forEach(function(appid){
-
-                                if(err){   //常规报错为没有当天数据
+                                if(!retObj[appid]) {
                                     retObj[appid] = {}
+                                }
+
+                                if(err ){   //常规报错为没有当天数据
+                                    retObj[appid][dateStr] = {}
                                 }else{
-                                    var r = {};
-                                    r[dateStr] = me.parseData(data[appid] || []);
-                                    retObj[appid] = r;
+                                    retObj[appid][dateStr] = me.parseData(data[appid] || []);
                                 }
 
                             });
 
                             if(--count==0) {
-                                //Object.keys(retObj).forEach(function(r){
-                                //    retObj[r] = me.processData(retObj[r]);
-                                //});
+                                Object.keys(retObj).forEach(function(r){
+                                    retObj[r] = me.processData(retObj[r]);
+                                });
                                 callback(null, retObj);
                             }
                         });
