@@ -359,7 +359,8 @@ StatisticsServicePV.prototype = {
                             }
 
                             if(--count==0) {
-                                callback(null, retObj);
+                                var ret = me.processData(retObj);
+                                callback(null, ret);
                             }
                         });
                     }else{
@@ -370,6 +371,30 @@ StatisticsServicePV.prototype = {
             })(dateStr);
 
         }
+    },
+    /**
+     * 对数据进行加工获得最终格式化的数据
+     * @param data
+     */
+    processData: function(data){
+        if(!data) return;
+        var ret = {};
+        Object.keys(data).forEach(function(date){
+            var _temp = {
+                pv: 0,
+                total: 0
+            };
+            data[date].forEach(function(item){
+                _temp.pv += item.pv || 0;
+                _temp.total += item.count || 0;
+            });
+
+            _temp.cent = (_temp.total / _temp.pv).toFixed(2);
+
+            ret[date] = _temp;
+        });
+
+        return ret;
     },
 
 
