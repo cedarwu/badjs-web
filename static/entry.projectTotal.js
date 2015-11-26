@@ -18,7 +18,7 @@ webpackJsonp([10],{
 	 * */
 
 
-	__webpack_require__(20);
+	__webpack_require__(19);
 	__webpack_require__(117);
 
 
@@ -105,21 +105,24 @@ webpackJsonp([10],{
 	                        caption: 'total',
 	                        sortable: true,
 	                        attr: 'align=center',
-	                        resizable: true
+	                        resizable: true,
+	                        size: '13%'
 	                    });
 	                    ret.columns.push({
 	                        field: pvName,
 	                        caption: 'pv',
 	                        sortable: true,
 	                        attr: 'align=center',
-	                        resizable: true
+	                        resizable: true,
+	                        size: '13%'
 	                    });
 	                    ret.columns.push({
 	                        field: centName,
 	                        caption: 'total/pv',
 	                        sortable: true,
 	                        attr: 'align=center',
-	                        resizable: true
+	                        resizable: true,
+	                        size: '13%'
 	                    });
 	                }
 
@@ -156,11 +159,11 @@ webpackJsonp([10],{
 
 	module.exports = statistics;
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(20), __webpack_require__(20)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(19), __webpack_require__(19)))
 
 /***/ },
 
-/***/ 20:
+/***/ 19:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, jQuery) {/* w2ui 1.4.3 (c) http://w2ui.com, vitmalina@gmail.com */

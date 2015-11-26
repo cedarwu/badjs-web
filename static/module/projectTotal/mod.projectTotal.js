@@ -91,21 +91,24 @@ var statistics = {
                         caption: 'total',
                         sortable: true,
                         attr: 'align=center',
-                        resizable: true
+                        resizable: true,
+                        size: '13%'
                     });
                     ret.columns.push({
                         field: pvName,
                         caption: 'pv',
                         sortable: true,
                         attr: 'align=center',
-                        resizable: true
+                        resizable: true,
+                        size: '13%'
                     });
                     ret.columns.push({
                         field: centName,
                         caption: 'total/pv',
                         sortable: true,
                         attr: 'align=center',
-                        resizable: true
+                        resizable: true,
+                        size: '13%'
                     });
                 }
 
