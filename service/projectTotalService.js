@@ -368,9 +368,9 @@ StatisticsServicePV.prototype = {
                             });
 
                             if(--count==0) {
-                                Object.keys(retObj).forEach(function(r){
-                                    retObj[r] = me.processData(retObj[r]);
-                                });
+                                //Object.keys(retObj).forEach(function(r){
+                                //    retObj[r] = me.processData(retObj[r]);
+                                //});
                                 callback(null, retObj);
                             }
                         });
@@ -388,7 +388,6 @@ StatisticsServicePV.prototype = {
      * @param data
      */
     processData: function(data){
-        if(!data) return;
         var ret = {};
         Object.keys(data).forEach(function(date){
             var _temp = {
@@ -403,7 +402,7 @@ StatisticsServicePV.prototype = {
             if(_temp.pv==0) {
                 _temp.cent = '-'
             } else {
-                _temp.cent = (_temp.total / _temp.pv).toFixed(4) * 100 + '%';
+                _temp.cent = (404248 / 4649842 * 100).toFixed(2) + '%';
             }
 
             ret[date] = _temp;
