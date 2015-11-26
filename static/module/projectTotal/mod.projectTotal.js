@@ -73,6 +73,7 @@ var statistics = {
             var item = data[id] || {},
                 record = {};
             record['projectName'] = listParams[id];
+            record['recid'] = id;
 
             Object.keys(item).forEach(function(date){  //5次循环
                 var dayObj = item[date],

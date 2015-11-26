@@ -3,13 +3,13 @@ webpackJsonp([10],{
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	var projectTotal = __webpack_require__(14);
+	var projectTotal = __webpack_require__(13);
 
 	projectTotal.init();
 
 /***/ },
 
-/***/ 14:
+/***/ 13:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, __webpack_provided_window_dot_w2ui, w2ui) {/**
@@ -87,6 +87,7 @@ webpackJsonp([10],{
 	            var item = data[id] || {},
 	                record = {};
 	            record['projectName'] = listParams[id];
+	            record['recid'] = id;
 
 	            Object.keys(item).forEach(function(date){  //5次循环
 	                var dayObj = item[date],
