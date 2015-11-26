@@ -1,15 +1,15 @@
-webpackJsonp([7],{
+webpackJsonp([8],{
 
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	var statistics  = __webpack_require__(13);
+	var statistics  = __webpack_require__(15);
 
 	statistics.init();
 
 /***/ },
 
-/***/ 13:
+/***/ 15:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {/**
@@ -19,8 +19,8 @@ webpackJsonp([7],{
 
 
 	__webpack_require__(18);
-	var Dialog = __webpack_require__(21);
-	var statisticsTpl = __webpack_require__(112);
+	var Dialog = __webpack_require__(106);
+	var statisticsTpl = __webpack_require__(116);
 
 	var encodeHtml = function (str) {
 	    return (str + '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\x60/g, '&#96;').replace(/\x27/g, '&#39;').replace(/\x22/g, '&quot;');
@@ -2107,7 +2107,7 @@ webpackJsonp([7],{
 
 /***/ },
 
-/***/ 21:
+/***/ 106:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {var Delegator = __webpack_require__(19);
@@ -2159,7 +2159,7 @@ webpackJsonp([7],{
 
 /***/ },
 
-/***/ 112:
+/***/ 116:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {module.exports = function (obj) {

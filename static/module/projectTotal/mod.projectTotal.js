@@ -79,32 +79,34 @@ var statistics = {
                     totalName = 'total' + date,
                     pvName = 'pv' + date,
                     centName = 'cent' + date;
-                firstCircle && ret.columnGroups.push({
-                    span: 3,
-                    caption: date
-                });
+                if(firstCircle) {
+                    ret.columnGroups.push({
+                        span: 3,
+                        caption: date
+                    });
 
-                ret.columns.push({
-                    field: totalName,
-                    caption: 'total',
-                    sortable: true,
-                    attr: 'align=center',
-                    resizable: true
-                });
-                ret.columns.push({
-                    field: pvName,
-                    caption: 'pv',
-                    sortable: true,
-                    attr: 'align=center',
-                    resizable: true
-                });
-                ret.columns.push({
-                    field: centName,
-                    caption: 'total/pv',
-                    sortable: true,
-                    attr: 'align=center',
-                    resizable: true
-                });
+                    ret.columns.push({
+                        field: totalName,
+                        caption: 'total',
+                        sortable: true,
+                        attr: 'align=center',
+                        resizable: true
+                    });
+                    ret.columns.push({
+                        field: pvName,
+                        caption: 'pv',
+                        sortable: true,
+                        attr: 'align=center',
+                        resizable: true
+                    });
+                    ret.columns.push({
+                        field: centName,
+                        caption: 'total/pv',
+                        sortable: true,
+                        attr: 'align=center',
+                        resizable: true
+                    });
+                }
 
                 record[totalName] = dayObj['total'];
                 record[pvName] = dayObj['pv'];
