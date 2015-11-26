@@ -35,9 +35,9 @@ var ErrorCount = {
             return;
         }
         var pts = new PTS();
-        var id = params.id + '';
+        var ids = params.id.toString().split(',');
         var timeScope = (params.timeScope && (params.timeScope|0)) || 5;
-        pts.queryByDays(id, timeScope, function(err, data){
+        pts.queryByDays(ids, timeScope, function(err, data){
             if(err){
                 res.jsonp({ret: -2, msg: err, data: null});
             }else{

@@ -335,16 +335,18 @@ StatisticsServicePV.prototype = {
 
     /**
      * 获取多天的数据
-     * @param {String | Array} appid 项目id
+     * @param {String | Array} appids 项目id
      * @param {String | Number} timeScope 时间戳(20151011)
      * @param {Function} callback
      */
-    queryByDays: function (appid, timeScope, callback) {
+    queryByDays: function (appids, timeScope, callback) {
         var me = this;
         var oneDay = 1000 * 60 * 60 * 24,
             count = timeScope,
             retObj = {};
-
+        if(typeof appids == 'string'){
+            appids = [appids];
+        }
         for(var i = 1; i <= timeScope; i++) {
             var date = new Date() - oneDay * i;
             var dateStr = dateFormat(new Date(date), 'yyyyMMdd');
@@ -352,15 +354,24 @@ StatisticsServicePV.prototype = {
                 me.openFile(dateStr, function(err, fileStorage){
                     if(fileStorage){
                         fileStorage.read(function(err, data){
-                            if(err){   //常规报错为没有当天数据
-                                retObj[dateStr] = []
-                            }else{
-                                retObj[dateStr] = me.parseData(data[appid] || []);
-                            }
+
+                            appids.forEach(function(appid){
+
+                                if(err){   //常规报错为没有当天数据
+                                    retObj[appid] = {}
+                                }else{
+                                    var r = {};
+                                    r[dateStr] = me.parseData(data[appid] || []);
+                                    retObj[appid] = r;
+                                }
+
+                            });
 
                             if(--count==0) {
-                                var ret = me.processData(retObj);
-                                callback(null, ret);
+                                Object.keys(retObj).forEach(function(r){
+                                    retObj[r] = me.processData(retObj[r]);
+                                });
+                                callback(null, retObj);
                             }
                         });
                     }else{
@@ -389,7 +400,11 @@ StatisticsServicePV.prototype = {
                 _temp.total += item.count || 0;
             });
 
-            _temp.cent = (_temp.total / _temp.pv).toFixed(2);
+            if(_temp.pv==0) {
+                _temp.cent = '-'
+            } else {
+                _temp.cent = (_temp.total / _temp.pv).toFixed(4) * 100 + '%';
+            }
 
             ret[date] = _temp;
         });
