@@ -56,7 +56,7 @@ var statistics = {
     processData: function(data) {
         var firstCircle = 1;
         var ret = {
-            name: 'grid',
+            name: 'grid' + Date.now(),
             columnGroups: [{span: 1, caption: ''}],
             columns: [{
                 field: 'projectName',
@@ -122,6 +122,7 @@ var statistics = {
             ret.records.push(record);
         });
 
+        ret.onColumnClick = function(){};
 
         return ret;
     }
@@ -131,14 +132,6 @@ var statistics = {
 function renderTable(data) {
     console.log(data);
     //console.log(typeof w2ui.grid != 'undefined'&&(data.projectId != -1));
-    if(w2ui.grid){
-        w2ui.grid.clear();
-        w2ui.grid.columns = data.columns;
-        w2ui.grid.columnGroups = data.columnGroups;
-        w2ui.grid.records = data.records;
-        w2ui.grid.refresh();
-        return;
-    }
     $('#grid').w2grid(data);
 }
 
