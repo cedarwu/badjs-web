@@ -128,7 +128,10 @@ var statistics = {
 function renderTable(data) {
     console.log(data);
     //console.log(typeof w2ui.grid != 'undefined'&&(data.projectId != -1));
-    $('#grid').w2grid(data);
+    setTimeout(function(){
+        window.$('#grid').w2grid(data);
+    }, 10);
+
 }
 
 
