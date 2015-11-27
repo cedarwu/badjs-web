@@ -33,10 +33,6 @@ var statistics = {
         window.w2ui = {};
         this.bindEvent();
     },
-    renderTable: function (data) {
-        renderTable(data);
-        //$('#chart-table').html(statisticsTpl({item: chart_projects}));
-    },
     bindEvent: function () {
         var self = this;
 
@@ -49,7 +45,7 @@ var statistics = {
             };
             $.getJSON("/errorCount/queryProjectTotal", param, function (data) {
                 var ret = self.processData(data.data || data);
-                self.renderTable(ret);
+                renderTable(ret);
             });
         }).click();
     },
