@@ -403,7 +403,7 @@ StatisticsServicePV.prototype = {
             if(_temp.pv==0) {
                 _temp.cent = '-'
             } else {
-                _temp.cent = (404248 / 4649842 * 100).toFixed(2) + '%';
+                _temp.cent = (_temp.total / _temp.pv * 100).toFixed(2) + '%';
             }
 
             ret[date] = _temp;
