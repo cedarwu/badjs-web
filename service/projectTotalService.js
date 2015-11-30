@@ -370,7 +370,22 @@ StatisticsServicePV.prototype = {
 
                             if(--count==0) {
                                 Object.keys(retObj).forEach(function(r){
-                                    retObj[r] = me.processData(retObj[r]);
+                                    var processObj = me.processData(retObj[r]);
+
+                                    if(appids.length > 1) {  //多项目，需过滤
+                                        var isIgnore = 1;
+
+                                        for(var p in processObj) {
+                                            if(processObj[p] && processObj[p].pv && processObj[p].pv>0) isIgnore = 0;
+                                        }
+
+                                        if(isIgnore) {
+                                            delete retObj[r];
+                                            return;
+                                        }
+                                    }
+
+                                    retObj[r] = processObj;
                                 });
                                 callback(null, retObj);
                             }
