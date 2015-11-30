@@ -79,7 +79,7 @@ var statistics = {
                 if(firstCircle) {
                     ret.columnGroups.push({
                         span: 3,
-                        caption: date
+                        caption: formatDate(date)
                     });
 
                     ret.columns.push({
@@ -100,7 +100,7 @@ var statistics = {
                     });
                     ret.columns.push({
                         field: centName,
-                        caption: '百分比（单位%）',
+                        caption: '比例(单位%)',
                         sortable: true,
                         attr: 'align=center',
                         resizable: true,
@@ -124,6 +124,10 @@ var statistics = {
     }
 
 };
+
+function formatDate(date) {
+    return date.slice(0,4) + '-' + date.slice(4,6) + '-' + date.slice(6);
+}
 
 function renderTable(data) {
     console.log(data);
