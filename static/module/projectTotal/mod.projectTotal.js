@@ -58,7 +58,7 @@ var statistics = {
                 field: 'projectName',
                 caption: '项目名称',
                 size: '100px',
-                sortable: false,
+                sortable: true,
                 attr: 'align=center',
                 resizable: true
             }],
@@ -100,7 +100,7 @@ var statistics = {
                     });
                     ret.columns.push({
                         field: centName,
-                        caption: 'total/pv',
+                        caption: '百分比（单位%）',
                         sortable: true,
                         attr: 'align=center',
                         resizable: true,

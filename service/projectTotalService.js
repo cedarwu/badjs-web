@@ -418,7 +418,7 @@ StatisticsServicePV.prototype = {
             if(_temp.pv==0) {
                 _temp.cent = '-'
             } else {
-                _temp.cent = (_temp.total / _temp.pv * 100).toFixed(2) + '%';
+                _temp.cent = Number((_temp.total / _temp.pv * 100).toFixed(2));
             }
 
             ret[date] = _temp;
