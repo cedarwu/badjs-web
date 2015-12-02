@@ -59,7 +59,7 @@ orm.connect( mysql, function(err , db) {
     var aa = new StatisticsService();
 
 
-    var startDate = new Date('2015-11-21 00:00:00');
+    var startDate = new Date('2015-11-30 00:00:00');
     var nowDate = new Date;
 
     var fetch = function (id , startDate){

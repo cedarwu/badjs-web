@@ -39,6 +39,6 @@ var StatisticsServicePV = require('../service/StatisticsService_PV');
 
 var SSPV = new StatisticsServicePV();
 //appid, dateStr, callback
-SSPV.getErrLogByDate(24, '20151201', function (err, data) {
+SSPV.getErrLogByDate(24, '20151202', function (err, data) {
     console.log(err, data);
 });
