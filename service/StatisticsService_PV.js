@@ -222,7 +222,7 @@ StatisticsServicePV.prototype = {
                 clearInterval(timer);
                 timer = null;
             }
-        }, 1000);
+        }, 2000);
 
         //拉取pv数据
         cblen++;
