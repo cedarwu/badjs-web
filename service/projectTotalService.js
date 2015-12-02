@@ -347,7 +347,7 @@ StatisticsServicePV.prototype = {
         if(typeof appids == 'string'){
             appids = [appids];
         }
-        for(var i = 1; i <= timeScope; i++) {
+        for(var i = 0; i < timeScope; i++) {
             var date = new Date() - oneDay * i;
             var dateStr = dateFormat(new Date(date), 'yyyyMMdd');
             (function(dateStr) {
