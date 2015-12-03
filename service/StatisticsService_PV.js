@@ -214,6 +214,7 @@ StatisticsServicePV.prototype = {
                     if (data) {
                         console.log('拉取成功:'+ id);
                         (!ep[id]) && (ep[id] = {});
+                        //合并错误
                         ep[id] = Omerge(ep[id], me.countError(data));
                     }
                     cb();
@@ -222,7 +223,7 @@ StatisticsServicePV.prototype = {
                 clearInterval(timer);
                 timer = null;
             }
-        }, 2000);
+        }, 4000);
 
         //拉取pv数据
         cblen++;
@@ -272,7 +273,7 @@ StatisticsServicePV.prototype = {
         var all = {};
         var detaT = 1000 * 60 * 10; //每10分钟的毫秒数
         (elog || []).forEach(function (item) {
-            var t10 = (parseInt(item.time / detaT) + 1) * detaT; //由于pv是后收集加到下一个10分，时间轴后移
+            var t10 = (parseInt(item.time / detaT) /*+ 1*/) * detaT; //由于pv是后收集加到下一个10分，时间轴后移
             if (!all[t10]) {
                 all[t10] = {count: Number(item.count)};
             } else {
