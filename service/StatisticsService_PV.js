@@ -62,13 +62,13 @@ var string2Date = function (str, format) {
 /**
  * 重新拉取配置文件
  */
-var reloadFileConfig = function(){
-    try{
+var reloadFileConfig = function () {
+    try {
         var config = fs.readFileSync(filePath);
         console.log(config);
         pageConfig = config;
-    }catch(e){
-        logger.error('配置文件解析错误:'+ e.message + e.stack);
+    } catch (e) {
+        logger.error('配置文件解析错误:' + e.message + e.stack);
     }
 };
 
@@ -131,6 +131,16 @@ StatisticsServicePV.prototype = {
         var end = start + 1000 * 60 * 60 * 24;
         this.getErrLog(appid, start - 1000 * 60 * 10, end, callback);//多取前面10分钟和pv对齐
     },
+    /**
+     * 获取最近1小时的数据
+     * @param appid
+     * @param callback
+     */
+    getErrLogLastHour: function (appid, callback) {
+        var end = Number(new Date());
+        var start = end - 1000 * 60 * 60;
+        this.getErrLog(appid, start, end, callback);//多取前面10分钟和pv对齐
+    },
 
     /**
      * 获取区间内每分钟错误
@@ -148,7 +158,7 @@ StatisticsServicePV.prototype = {
         };
         logService.queryCount(params, function (err, items) {
             if (err) {
-                logger.error('errLog：拉取错误失败,'+JSON.stringify(params) + err);
+                logger.error('errLog：拉取错误失败,' + JSON.stringify(params) + err);
             }
             callback(err, items);
         });
@@ -158,8 +168,9 @@ StatisticsServicePV.prototype = {
      * 更新当天的数据
      * @param callback
      */
-    updateNow: function(callback){
-        callback = callback || (function(){});
+    updateNow: function (callback) {
+        callback = callback || (function () {
+            });
         var now = new Date();
         var date = dateFormat(now, 'yyyyMMdd');
         this.countSave(date, callback);
@@ -172,14 +183,15 @@ StatisticsServicePV.prototype = {
      */
     countSave: function (dateStr, callback) {
         var me = this;
-        me.getEP(dateStr, function(err, data){
-            if(data){
-                me.save(dateStr, data, function(err, data){
+        me.getEP(dateStr, function (err, data) {
+            if (data) {
+                me.save(dateStr, data, function (err, data) {
                     callback(err, data);
                 });
             }
         });
     },
+
 
     /**
      * 获取对应天的错误和pv
@@ -194,7 +206,7 @@ StatisticsServicePV.prototype = {
         var cb = function () {
             cblen--;
             if (cblen == 0) {
-                console.log('数据采集完成'+dateStr);
+                console.log('数据采集完成' + dateStr);
                 me.countCent(ep);
                 (errs.length == 0) && (errs = null);
                 callback(errs, ep);
@@ -212,14 +224,14 @@ StatisticsServicePV.prototype = {
             if (id) {
                 me.getErrLogByDate(id, dateStr, function (err, data) {
                     if (data) {
-                        console.log('拉取成功:'+ id);
+                        console.log('拉取成功:' + id);
                         (!ep[id]) && (ep[id] = {});
                         //合并错误
                         ep[id] = Omerge(ep[id], me.countError(data));
                     }
                     cb();
                 });
-            }else{
+            } else {
                 clearInterval(timer);
                 timer = null;
             }
@@ -227,12 +239,12 @@ StatisticsServicePV.prototype = {
 
         //拉取pv数据
         cblen++;
-        me.pvService.getByDate(dateStr, function(err, data){
-            for(var appid in me.pageMap){
+        me.pvService.getByDate(dateStr, function (err, data) {
+            for (var appid in me.pageMap) {
                 var pvs = [];
 
-                (me.pageMap[appid] || []).forEach(function(pageid){
-                    if(data[pageid]){
+                (me.pageMap[appid] || []).forEach(function (pageid) {
+                    if (data[pageid]) {
                         pvs.push(data[pageid]);
                     }
                 });
@@ -248,11 +260,11 @@ StatisticsServicePV.prototype = {
      * @param eps
      * @returns {*}
      */
-    countCent: function(eps){
-        for(var id in eps){
-            (function(ep){
-                for(var t in ep){
-                    if(ep[t].pv > 0){
+    countCent: function (eps) {
+        for (var id in eps) {
+            (function (ep) {
+                for (var t in ep) {
+                    if (ep[t].pv > 0) {
                         (typeof ep[t].count != 'number') && (ep[t].count = 0);
                         ep[t].cent = (ep[t].count / ep[t].pv).toFixed(5);
                     }
@@ -261,7 +273,6 @@ StatisticsServicePV.prototype = {
         }
         return eps;
     },
-
 
 
     /**
@@ -312,23 +323,23 @@ StatisticsServicePV.prototype = {
      */
     queryByDay: function (appids, dateStr, callback) {
         var me = this;
-        if(typeof appids == 'string'){
+        if (typeof appids == 'string') {
             appids = [appids];
         }
-        this.openFile(dateStr, function(err, fileStorage){
-            if(fileStorage){
-                fileStorage.read(function(err, data){
+        this.openFile(dateStr, function (err, fileStorage) {
+            if (fileStorage) {
+                fileStorage.read(function (err, data) {
                     var retObj = {};
-                    if(err){
+                    if (err) {
                         callback(err);
-                    }else{
-                        (appids || []).forEach(function(appid){
+                    } else {
+                        (appids || []).forEach(function (appid) {
                             retObj[appid] = me.parseData(data[appid] || {});
                         });
                         callback(null, retObj);
                     }
                 });
-            }else{
+            } else {
                 callback(err);
             }
         });
@@ -338,15 +349,15 @@ StatisticsServicePV.prototype = {
      * @param data
      * @returns {*}
      */
-    parseData: function(data){
+    parseData: function (data) {
         var rtnArray = [];
-        for(var t in data){
+        for (var t in data) {
             data[t].time = Number(t) || 0;
-            if(typeof data[t] == 'object'){
+            if (typeof data[t] == 'object') {
                 rtnArray.push(data[t]);
             }
         }
-        rtnArray.sort(function(a,b){
+        rtnArray.sort(function (a, b) {
             return a.time - b.time;
         });
         return rtnArray;
