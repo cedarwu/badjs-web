@@ -3,7 +3,7 @@
  * Created by donaldcen on 2015/11/03
  */
 var SSPV = require('../../service/StatisticsService_PV');
-var PTS = require('../../service/projectTotalService');
+var PTS = require('../../service/projectTotalService2');
 var dateFormat = require('../../utils/dateFormat');
 
 var ErrorCount = {

@@ -1,0 +1,211 @@
+/**
+ * pv统计service
+ * Created by donaldcen on 2015/11/01
+ * @constructor
+ */
+
+var pageConfig = require('../fileStorage/pageid.js');
+var PvService = require('./PvService');
+var dateFormat = require('../utils/dateFormat');
+var LogService = require('../service/LogService');
+var Omerge = require('../utils/objectMerge');
+var FileStorage = require('./FileStorage');
+var fs = require('fs');
+var path = require('path');
+var log4js = require('log4js'),
+    logger = log4js.getLogger();
+//var filePath = path.resolve(GLOBAL.pjconfig.fileStorage.pageid);
+
+/**
+ * 转换pageMap
+ * @param {json} pageconfig 页面id配置
+ * @returns {{}}
+ */
+//var page2Map = function (pageconfig) {
+//    var map = {};
+//    for (var i in pageconfig) {
+//        var pageid = i.replace(/-/g, '_');
+//        if (!map[pageconfig[i]]) {
+//            map[pageconfig[i]] = [];
+//        }
+//        if (!(i in map[pageconfig[i]])) {
+//            map[pageconfig[i]].push(pageid);
+//        }
+//    }
+//    return map;
+//};
+
+/**
+ * 字符串转时间
+ * @param str
+ */
+var string2Date = function (str, format) {
+    var timeStr = {
+        y: '',
+        M: '',
+        d: '',
+        h: '',
+        m: '',
+        s: ''
+    };
+    var time;
+    var len = format.length;
+    for (var i = 0; i < len; i++) {
+        if (typeof timeStr[format[i]] != 'undefined') {
+            timeStr[format[i]] += str[i];
+        }
+    }
+    time = new Date(timeStr.y + '/' + timeStr.M + '/' + timeStr.d + ' ' + timeStr.h + ':' + timeStr.m + ':' + timeStr.s);
+    return time;
+};
+
+/**
+ * 重新拉取配置文件
+ */
+var reloadFileConfig = function () {
+    try {
+        var config = fs.readFileSync(filePath);
+        console.log(config);
+        pageConfig = config;
+    } catch (e) {
+        logger.error('配置文件解析错误:' + e.message + e.stack);
+    }
+};
+
+function StatisticsServicePV() {
+    this.pageMap = pageConfig;
+    this.pvService = PvService.getServices()[0] || PvService.create();
+    this.options = {
+        filePath: __dirname + '/../fileStorage/total'
+    };
+    this.files = {};
+    //this.pvService.getByDate('20151101', function(err, data){
+    //    console.log(err, data);
+    //});
+}
+
+
+StatisticsServicePV.prototype = {
+    /**
+     * 初始化fileStorage
+     * @param {String} key 日期（20151030）
+     * @param {Function} callback 回调
+     */
+    openFile: function (callback) {
+        var key = '1';
+        var opt = this.options;
+        if (this.files[key]) {
+            callback(null, this.files[key]);
+        } else {
+            this.files[key] = new FileStorage(opt.filePath.replace(/\{date\}/g, key), function (err, fileStorage) {
+                callback(err, fileStorage);
+            }, false);
+        }
+    },
+    /**
+     * 存入统计数据
+     * @param {String} key 日期时间戳(20151011)
+     * @param {Object} data 存入内容
+     * @param {Function} callback
+     */
+    save: function (data, callback) {
+        var me = this;
+        me.openFile(function (err, fileStorage) {
+            if (err) {
+                callback(err);
+            } else {
+                fileStorage.update(data, function (err, data) {
+                    callback(err, data);
+                });
+            }
+
+        });
+    },
+
+    /**
+     * 获取多天的数据
+     * @param {String | Array} appids 项目id
+     * @param {String | Number} timeScope 时间戳(20151011)
+     * @param {Function} callback
+     */
+    queryByDays: function (appids, timeScope, callback) {
+        var oneDay = 1000 * 60 * 60 * 24;
+        if (typeof appids == 'string') {
+            appids = [appids];
+        }
+        var dates = [];
+        for (var i = timeScope; i > 0; i--) {
+            dates.push(dateFormat( new Date(new Date() - oneDay * i), 'yyyyMMdd'));
+        }
+
+        this.query(function (err, data) {
+
+            var _data = {};
+            if (data) {
+                //遍历appid
+                appids.forEach(function(appid){
+                    _data[appid] = {};
+                    //遍历日期
+                    dates.forEach(function(date){
+                        //console.log(id, date, data[id][date]);
+                        if(data[appid] && data[appid][date]){
+                            _data[appid][date] = data[appid][date];
+                        }
+                    });
+                });
+
+                callback(null, _data);
+            } else {
+                callback(err);
+            }
+        });
+    },
+
+    /**
+     * 拉取数据
+     * @param callback
+     */
+    query: function (callback) {
+        this.openFile(function (err, fileStorage) {
+            if (fileStorage) {
+                fileStorage.read(function (err, data) {
+                    callback(err, data);
+                });
+            } else {
+                callback(err);
+            }
+        })
+    },
+
+    /**
+     * 格式化总数
+     * @param {Object} obj 数据 {id: number, id: number, ...}
+     * @param {String} date 时间戳
+     */
+    parseTotal: function(date, obj){
+        var _data = {};
+        for(var id in obj){
+            if(!_data[id]){
+                _data[id] = {}
+            }
+            _data[id][date] = {
+                total : obj[id]
+            }
+        }
+        return _data;
+    }
+};
+
+module.exports = StatisticsServicePV;
+
+//var ss = new StatisticsServicePV();
+////ss.queryByDays([24,36], 5, function(err, data){
+////    console.log(data);
+////});
+//var data = ss.parseTotal('20151201',
+//    {"18":221572,"19":953,"20":107,"21":20800,"22":125065,"24":3136,"25":266,"30":1089,"32":1472,"33":492189,"34":40451,"35":9917,"36":4467,"38":3252,"39":33192,"40":27583,"41":120811,"42":8776,"43":1295,"44":31080,"46":188145,"47":1290,"49":30117,"50":1731233,"51":389057}
+//    );
+//console.log(data);
+//ss.save(data, function(err, data){
+//    console.log(err, data);
+//});

@@ -43,7 +43,7 @@ module.exports = function (){
         var pvStorage = require("../service/PvService");
         logger.info('start pvStorage ...');
         pvStorage.start(function(){
-            errCount.updateNow();
+            //errCount.updateNow();
         });
     },3000)
 }

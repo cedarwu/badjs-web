@@ -39,6 +39,22 @@ GLOBAL.pjconfig = {
 
 
 var SSPV = new StatisticsServicePV();
-SSPV.countSave('20151201', function () {
-    console.log(arguments);
+//SSPV.countSave('20151201', function () {
+//    console.log(arguments);
+//});
+//SSPV.getErrLogByDate(24, '20151202' , function(err, data){
+//    var es = {};
+//    if (data) {
+//        console.log('拉取成功:'+ id);
+//        es = SSPV.countError(data);
+//    }
+//    console.log(es);
+//});
+SSPV.getErrLogLastHour(24, function (err, data) {
+    var es = {};
+    if (data) {
+        console.log('拉取成功:');
+        es = SSPV.countError(data);
+    }
+    console.log(data, es);
 });
