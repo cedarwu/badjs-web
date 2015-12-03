@@ -214,13 +214,13 @@ StatisticsServicePV.prototype = {
 };
 
 module.exports = StatisticsServicePV;
-
-var ss = new StatisticsServicePV();
-ss.query(function(err, data){
-    ss.save(ss.countEent(data), function(err, data){
-        console.log(err, data);
-    });
-});
+//
+//var ss = new StatisticsServicePV();
+//ss.query(function(err, data){
+//    ss.save(ss.countEent(data), function(err, data){
+//        console.log(err, data);
+//    });
+//});
 //var data = ss.parseTotal('20151201',
 //    {"18":221572,"19":953,"20":107,"21":20800,"22":125065,"24":3136,"25":266,"30":1089,"32":1472,"33":492189,"34":40451,"35":9917,"36":4467,"38":3252,"39":33192,"40":27583,"41":120811,"42":8776,"43":1295,"44":31080,"46":188145,"47":1290,"49":30117,"50":1731233,"51":389057}
 //    );
