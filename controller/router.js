@@ -28,7 +28,8 @@ module.exports = function (app) {
 
     //html页面请求
     app.get('/', function (req, res) {
-        res.render('index', {});
+        //res.render('index', {});
+        UserAction.login({}, req, res);
     });
 
     app.get('/index.html', function (req, res) {
