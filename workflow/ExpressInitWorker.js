@@ -58,7 +58,7 @@ app.use(orm.express(msqlUrl, {
 
 
 
-app.use("/user" ,function (req , res , next){
+app.use("/" ,function (req , res , next){
     var params = req.query,
         user  = req.session.user,
         //获取用户model
