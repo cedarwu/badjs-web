@@ -29,7 +29,8 @@ module.exports = function (app) {
     //html页面请求
     app.get('/', function (req, res) {
         //res.render('index', {});
-        UserAction.login({}, req, res);
+        //UserAction.login({}, req, res);
+        res.redirect('/user/oalogin');
     });
 
     app.get('/index.html', function (req, res) {
