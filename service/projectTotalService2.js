@@ -121,7 +121,6 @@ StatisticsServicePV.prototype = {
     },
 
 
-
     /**
      * 获取多天的数据
      * @param {String | Array} appids 项目id
@@ -181,11 +180,12 @@ StatisticsServicePV.prototype = {
      * @param dateStr
      */
     processPV: function (dateStr, callback) {
-        callback = callback || (function(){});
+        callback = callback || (function () {
+            });
         var me = this;
         var totals = {};
         me.pvService.getByDate(dateStr, function (err, data) {
-            if(typeof data == 'object'){
+            if (typeof data == 'object') {
                 for (var appid in me.pageMap) {
                     (me.pageMap[appid] || []).forEach(function (pageid) {
                         if (data[pageid]) {
@@ -204,29 +204,62 @@ StatisticsServicePV.prototype = {
      * @param dataStr
      * @param callback
      */
-    processTotal: function(dataStr, callback){
-        callback = callback || (function(){});
+    processTotal: function (dataStr, callback) {
+        callback = callback || (function () {
+            });
         var me = this;
         var appids = [];
         var totals = {};
-        Object.keys(me.pageMap).forEach(function(key, value){
+        Object.keys(me.pageMap).forEach(function (key, value) {
             appids.push(key);
         });
-        var fetch = function(){
+        var fetch = function () {
             var id = appids.pop();
-            if(id){
-                me.getTotalById(id, dataStr, function(err, total){
-                    if(err){
-                        console.error('[projectTotalService Error] get '+ id +' total error');
-                    }else{
+            if (id) {
+                me.getTotalById(id, dataStr, function (err, total) {
+                    if (err) {
+                        console.error('[projectTotalService Error] get ' + id + ' total error');
+                    } else {
+                        console.log('get', id, total);
                         totals[id] = total;
                     }
+                    fetch();
                 });
-            }else{
+            } else {
                 callback(null, totals);
             }
         };
         fetch();
+    },
+
+    /**
+     * 更新
+     */
+    update: function (dateStr, callback) {
+        var me = this;
+        callback = callback || (function () {
+            });
+        var apps = {};
+        var len = 2;
+        //存如apps
+        var cb = function (key, data) {
+            len--;
+            if (data) {
+                Object.keys(data).forEach(function (appid, total) {
+                    (!apps[appid]) && (apps[appid] = {});
+                    apps[appid][key] = total;
+                });
+            }
+            if(!len){
+                callback(null, apps);
+            }
+        };
+        me.processPV(dateFormat(dateStr, 'yyMMdd'), function (err, data) {
+            cb('pv', data);
+        });
+        me.processTotal(dateStr, function (err, data) {
+            cb('total', data)
+        });
     },
 
     /**
@@ -235,27 +268,28 @@ StatisticsServicePV.prototype = {
      * @param startDate
      * @param cb
      */
-    getTotalById: function(id , startDate , cb){
-        if(typeof startDate == 'string'){
+    getTotalById: function (id, startDate, cb) {
+        if (typeof startDate == 'string') {
             startDate = new Date(startDate);
         }
-        cb = cb || (function(){});
-        http.get((this.url + '?id=' + id + '&startDate=' + (startDate -0 ))  , function(res){
+        cb = cb || (function () {
+            });
+        http.get((this.url + '?id=' + id + '&startDate=' + (startDate - 0 )), function (res) {
             var buffer = '';
-            res.on('data' , function (chunk){
+            res.on('data', function (chunk) {
                 buffer += chunk.toString();
-            }).on('end' , function (){
+            }).on('end', function () {
                 try {
                     var result = JSON.parse(buffer);
 
                     cb(null, result.pv);
-                }catch(err){
+                } catch (err) {
                     logger.error('error :' + err);
                     cb(err);
                 }
             })
 
-        }).on('error' , function (err){
+        }).on('error', function (err) {
             logger.error('error :' + err);
             cb(err);
         });
@@ -287,7 +321,7 @@ StatisticsServicePV.prototype = {
     countPv: function (pvs) {
         var total = 0, temp;
         for (var t in pvs) {
-            if((temp = Number(pvs[t])) > 0){
+            if ((temp = Number(pvs[t])) > 0) {
                 total += temp;
             }
         }

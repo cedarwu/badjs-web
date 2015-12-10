@@ -60,9 +60,9 @@ var SSPV = new StatisticsServicePV();
 //    console.log(data, es);
 //});
 var PTS = new TotalService();
-PTS.processTotal(new Date('2015-12-09 00:00:00'), function(err, data){
-    console.log(err, data);
+PTS.update(new Date('2015-12-09 00:00:00'), function(err, data){
+    console.log('total',err, data);
 });
-PTS.processPV('20151209',function(err, data){
-    console.log(err, data);
-});
+//PTS.processPV('20151209',function(err, data){
+//    console.log('pv',err, data);
+//});
