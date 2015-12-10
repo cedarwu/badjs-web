@@ -246,9 +246,9 @@ StatisticsServicePV.prototype = {
             console.log(key, data);
             len--;
             if (data) {
-                Object.keys(data).forEach(function (appid, total) {
+                Object.keys(data).forEach(function (appid, index) {
                     (!apps[appid]) && (apps[appid] = {});
-                    apps[appid][key] = total;
+                    apps[appid][key] = data[appid];
                 });
             }
             if(!len){
