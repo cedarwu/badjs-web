@@ -60,9 +60,20 @@ var SSPV = new StatisticsServicePV();
 //    console.log(data, es);
 //});
 var PTS = new TotalService();
-PTS.fetchAndSave(new Date('2015-12-09 00:00:00'), function(err, data){
-    console.log('total',err, data);
-});
+var dates = ['2015-12-08'];
+var fetch = function () {
+    var date = dates.pop();
+    if (date) {
+        PTS.fetchAndSave(new Date(date), function(err, data){
+            console.log('total',err, data);
+            fetch();
+        });
+    } else {
+
+    }
+};
+
+
 //PTS.processPV('20151209',function(err, data){
 //    console.log('pv',err, data);
 //});
