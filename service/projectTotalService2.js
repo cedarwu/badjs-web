@@ -247,6 +247,7 @@ StatisticsServicePV.prototype = {
      */
     update: function (dateStr, callback) {
         var me = this;
+        var formatDate = dateFormat(dateStr, 'yyyyMMdd');
         callback = callback || (function () {
             });
         var apps = {};
@@ -257,14 +258,15 @@ StatisticsServicePV.prototype = {
             if (data) {
                 Object.keys(data).forEach(function (appid, index) {
                     (!apps[appid]) && (apps[appid] = {});
-                    apps[appid][key] = data[appid];
+                    (!apps[appid][formatDate]) && (apps[appid][formatDate] = {});
+                    apps[appid][formatDate][key] = data[appid];
                 });
             }
             if(!len){
                 callback(null, apps);
             }
         };
-        me.processPV(dateFormat(dateStr, 'yyyyMMdd'), function (err, data) {
+        me.processPV(formatDate, function (err, data) {
             cb('pv', data);
         });
         me.processTotal(dateStr, function (err, data) {
