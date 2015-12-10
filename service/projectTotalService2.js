@@ -8,11 +8,12 @@ var pageConfig = require('../fileStorage/pageid.js');
 var PvService = require('./PvService');
 var dateFormat = require('../utils/dateFormat');
 var LogService = require('../service/LogService');
-var Omerge = require('../utils/objectMerge');
 var FileStorage = require('./FileStorage');
 var fs = require('fs');
 var path = require('path');
 var log4js = require('log4js'),
+    http = require('http'),
+    _ = require('underscore'),
     logger = log4js.getLogger();
 //var filePath = path.resolve(GLOBAL.pjconfig.fileStorage.pageid);
 
@@ -79,9 +80,7 @@ function StatisticsServicePV() {
         filePath: __dirname + '/../fileStorage/total'
     };
     this.files = {};
-    //this.pvService.getByDate('20151101', function(err, data){
-    //    console.log(err, data);
-    //});
+    this.url = GLOBAL.pjconfig.storage.errorMsgTopUrl;
 }
 
 
@@ -104,7 +103,6 @@ StatisticsServicePV.prototype = {
     },
     /**
      * 存入统计数据
-     * @param {String} key 日期时间戳(20151011)
      * @param {Object} data 存入内容
      * @param {Function} callback
      */
@@ -122,6 +120,8 @@ StatisticsServicePV.prototype = {
         });
     },
 
+
+
     /**
      * 获取多天的数据
      * @param {String | Array} appids 项目id
@@ -135,7 +135,7 @@ StatisticsServicePV.prototype = {
         }
         var dates = [];
         for (var i = timeScope; i > 0; i--) {
-            dates.push(dateFormat( new Date(new Date() - oneDay * i), 'yyyyMMdd'));
+            dates.push(dateFormat(new Date(new Date() - oneDay * i), 'yyyyMMdd'));
         }
 
         this.query(function (err, data) {
@@ -143,12 +143,12 @@ StatisticsServicePV.prototype = {
             var _data = {};
             if (data) {
                 //遍历appid
-                appids.forEach(function(appid){
+                appids.forEach(function (appid) {
                     _data[appid] = {};
                     //遍历日期
-                    dates.forEach(function(date){
+                    dates.forEach(function (date) {
                         //console.log(id, date, data[id][date]);
-                        if(data[appid] && data[appid][date]){
+                        if (data[appid] && data[appid][date]) {
                             _data[appid][date] = data[appid][date];
                         }
                     });
@@ -176,34 +176,90 @@ StatisticsServicePV.prototype = {
             }
         })
     },
+    /**
+     * 拉取PV汇总
+     * @param dateStr
+     */
+    processPV: function (dateStr, callback) {
+        callback = callback || (function(){});
+        var me = this;
+        var totals = {};
+        me.pvService.getByDate(dateStr, function (err, data) {
+            if(typeof data == 'object'){
+                for (var appid in me.pageMap) {
+                    (me.pageMap[appid] || []).forEach(function (pageid) {
+                        if (data[pageid]) {
+                            (typeof totals[appid] == 'undefined') && (totals[appid] = 0);
+                            totals[appid] += me.countPv(data[pageid]);
+                        }
+                    });
+                }
+            }
+            callback(err, totals);
+        });
+    },
+
+    processTotal: function(id , startDate , cb){
+        http.get((this.url + '?id=' + id + '&startDate=' + (startDate -0 ))  , function(res){
+            var buffer = '';
+            res.on('data' , function (chunk){
+                buffer += chunk.toString();
+            }).on('end' , function (){
+                try {
+                    var result = JSON.parse(buffer);
+
+                    console.log(result);
+                }catch(err){
+                    logger.error('error :' + err);
+                }
+            })
+
+        }).on('error' , function (err){
+            logger.error('error :' + err);
+        });
+    },
 
     /**
      * 格式化总数
      * @param {Object} obj 数据 {id: number, id: number, ...}
      * @param {String} date 时间戳
      */
-    parseTotal: function(date, obj){
+    parseTotal: function (date, obj) {
         var _data = {};
-        for(var id in obj){
-            if(!_data[id]){
+        for (var id in obj) {
+            if (!_data[id]) {
                 _data[id] = {}
             }
             _data[id][date] = {
-                total : obj[id]
+                total: obj[id]
             }
         }
         return _data;
     },
 
     /**
+     * 统计pv
+     * @param {Array} pvs {'0000':'100','0010':'123'}
+     * @returns {{}}
+     */
+    countPv: function (pvs) {
+        var total = 0, temp;
+        for (var t in pvs) {
+            if((temp = Number(pvs[t])) > 0){
+                total += temp;
+            }
+        }
+        return total;
+    },
+    /**
      * 计算百分比
      */
-    countEent: function(data){
+    countEent: function (data) {
         var temp;
-        for(var appid in data){
-            if(typeof data[appid] == 'object'){
-                for(var date in data[appid]){
-                    if((temp = data[appid][date]) && temp.pv && temp.total){
+        for (var appid in data) {
+            if (typeof data[appid] == 'object') {
+                for (var date in data[appid]) {
+                    if ((temp = data[appid][date]) && temp.pv && temp.total) {
                         data[appid][date].cent = Number((temp.total / temp.pv * 100).toFixed(2));
                     }
                 }
@@ -216,6 +272,9 @@ StatisticsServicePV.prototype = {
 module.exports = StatisticsServicePV;
 //
 //var ss = new StatisticsServicePV();
+//ss.processPV('20151102', function(err, total){
+//    console.log('回报',err, total);
+//});
 //ss.query(function(err, data){
 //    ss.save(ss.countEent(data), function(err, data){
 //        console.log(err, data);

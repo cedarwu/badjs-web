@@ -1,6 +1,7 @@
 var LogService = require('../service/LogService');
 var dateFormat = require('../utils/dateFormat');
 var StatisticsServicePV = require('../service/StatisticsService_PV');
+var TotalService = require('../service/projectTotalService2');
 
 GLOBAL.pjconfig = {
     "mysql": {
@@ -50,11 +51,16 @@ var SSPV = new StatisticsServicePV();
 //    }
 //    console.log(es);
 //});
-SSPV.getErrLogLastHour(24, function (err, data) {
-    var es = {};
-    if (data) {
-        console.log('拉取成功:');
-        es = SSPV.countError(data);
-    }
-    console.log(data, es);
+//SSPV.getErrLogLastHour(24, function (err, data) {
+//    var es = {};
+//    if (data) {
+//        console.log('拉取成功:');
+//        es = SSPV.countError(data);
+//    }
+//    console.log(data, es);
+//});
+var PTS = new TotalService();
+PTS.processTotal(24, new Date('2015-11-30 00:00:00'));
+PTS.processPV('20151209',function(err, data){
+    console.log(err, data);
 });

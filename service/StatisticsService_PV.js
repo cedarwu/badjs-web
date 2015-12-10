@@ -316,6 +316,22 @@ StatisticsServicePV.prototype = {
     },
 
     /**
+     * 获取某天数据
+     * @param dateStr
+     * @param callback
+     */
+    query: function(dateStr, callback){
+        this.openFile(dateStr, function (err, fileStorage) {
+            if (fileStorage) {
+                fileStorage.read(function (err, data) {
+                    callback(err, data);
+                });
+            } else {
+                callback(err);
+            }
+        });
+    },
+    /**
      * 获取一天的数据
      * @param {String | Array} appids 项目id
      * @param {String} dateStr 时间戳(20151011)
@@ -326,21 +342,15 @@ StatisticsServicePV.prototype = {
         if (typeof appids == 'string') {
             appids = [appids];
         }
-        this.openFile(dateStr, function (err, fileStorage) {
-            if (fileStorage) {
-                fileStorage.read(function (err, data) {
-                    var retObj = {};
-                    if (err) {
-                        callback(err);
-                    } else {
-                        (appids || []).forEach(function (appid) {
-                            retObj[appid] = me.parseData(data[appid] || {});
-                        });
-                        callback(null, retObj);
-                    }
-                });
-            } else {
+        this.query(dateStr, function(err, data){
+            var retObj = {};
+            if (err) {
                 callback(err);
+            } else {
+                (appids || []).forEach(function (appid) {
+                    retObj[appid] = me.parseData(data[appid] || {});
+                });
+                callback(null, retObj);
             }
         });
     },
