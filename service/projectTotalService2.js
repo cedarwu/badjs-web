@@ -243,6 +243,7 @@ StatisticsServicePV.prototype = {
         var len = 2;
         //存如apps
         var cb = function (key, data) {
+            console.log(key, data);
             len--;
             if (data) {
                 Object.keys(data).forEach(function (appid, total) {
@@ -254,7 +255,7 @@ StatisticsServicePV.prototype = {
                 callback(null, apps);
             }
         };
-        me.processPV(dateFormat(dateStr, 'yyMMdd'), function (err, data) {
+        me.processPV(dateFormat(dateStr, 'yyyyMMdd'), function (err, data) {
             cb('pv', data);
         });
         me.processTotal(dateStr, function (err, data) {
