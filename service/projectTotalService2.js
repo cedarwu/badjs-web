@@ -199,7 +199,47 @@ StatisticsServicePV.prototype = {
         });
     },
 
-    processTotal: function(id , startDate , cb){
+    /**
+     * 拉取错误总数
+     * @param dataStr
+     * @param callback
+     */
+    processTotal: function(dataStr, callback){
+        callback = callback || (function(){});
+        var me = this;
+        var appids = [];
+        var totals = {};
+        Object.keys(me.pageMap).forEach(function(key, value){
+            appids.push(key);
+        });
+        var fetch = function(){
+            var id = appids.pop();
+            if(id){
+                me.getTotalById(id, dataStr, function(err, total){
+                    if(err){
+                        console.error('[projectTotalService Error] get '+ id +' total error');
+                    }else{
+                        totals[id] = total;
+                    }
+                });
+            }else{
+                callback(null, totals);
+            }
+        };
+        fetch();
+    },
+
+    /**
+     * 拉取总数
+     * @param id
+     * @param startDate
+     * @param cb
+     */
+    getTotalById: function(id , startDate , cb){
+        if(typeof startDate == 'string'){
+            startDate = new Date(startDate);
+        }
+        cb = cb || (function(){});
         http.get((this.url + '?id=' + id + '&startDate=' + (startDate -0 ))  , function(res){
             var buffer = '';
             res.on('data' , function (chunk){
@@ -208,14 +248,16 @@ StatisticsServicePV.prototype = {
                 try {
                     var result = JSON.parse(buffer);
 
-                    console.log(result);
+                    cb(null, result.pv);
                 }catch(err){
                     logger.error('error :' + err);
+                    cb(err);
                 }
             })
 
         }).on('error' , function (err){
             logger.error('error :' + err);
+            cb(err);
         });
     },
 
