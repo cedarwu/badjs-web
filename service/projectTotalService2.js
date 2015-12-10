@@ -232,6 +232,16 @@ StatisticsServicePV.prototype = {
         fetch();
     },
 
+    fetchAndSave: function(date, callback){
+        callback = callback || (function(){});
+        var me = this;
+        me.update(date, function(err, data){
+            if(data){
+                data = me.countEent(data);
+            }
+            me.save(data, callback);
+        });
+    },
     /**
      * 更新
      */
@@ -243,7 +253,6 @@ StatisticsServicePV.prototype = {
         var len = 2;
         //存如apps
         var cb = function (key, data) {
-            console.log(key, data);
             len--;
             if (data) {
                 Object.keys(data).forEach(function (appid, index) {
