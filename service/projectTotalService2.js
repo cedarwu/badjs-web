@@ -354,6 +354,20 @@ StatisticsServicePV.prototype = {
             }
         }
         return data;
+    },
+    start: function(){
+        var me = this;
+        var day;
+        setInterval(function(){
+            var date = new Date();
+            var _day = date.getDate();
+            if(day != _day){
+                day = _day;
+                me.fetchAndSave(date,function(){
+                    console.log('同步完成'+date.toString());
+                });
+            }
+        },60*60*1000);
     }
 };
 

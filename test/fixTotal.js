@@ -72,7 +72,7 @@ var fetch = function () {
 
     }
 };
-
+fetch();
 
 //PTS.processPV('20151209',function(err, data){
 //    console.log('pv',err, data);

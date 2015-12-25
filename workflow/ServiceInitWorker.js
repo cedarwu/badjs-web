@@ -39,6 +39,12 @@ module.exports = function (){
         var errCount = new ErrCountService();
         errCount.updateNow();
 
+        //项目统计
+        var ProjectTotalService = require("../service/projectTotalService2");
+        var TotalService = new ProjectTotalService();
+        TotalService.start();
+
+
         //pv同步服务
         var pvStorage = require("../service/PvService");
         logger.info('start pvStorage ...');
